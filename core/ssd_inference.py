@@ -2,6 +2,7 @@ import torch
 import cv2
 import numpy as np
 
+import torch
 from torchvision.models.detection import ssd300_vgg16
 from torchvision.models.detection.ssd import SSDHead
 from torchvision.models.detection import _utils as det_utils

@@ -112,6 +112,32 @@ def save_comparison_grid(img, preds, save_path="comparison.jpg"):
     cv2.imwrite(save_path, grid)
     return grid
 
+def draw_preds_and_gt(img, pred_boxes, gt_boxes,
+                      pred_color=(0, 255, 0), gt_color=(0, 255, 255),
+                      pred_label="pred", gt_label="gt"):
+    """
+    pred_boxes: [[x1, y1, x2, y2, score], ...]
+    gt_boxes:   [[x1, y1, x2, y2], ...]
+    """
+    out = img.copy()
+
+    # GT boxes
+    for (x1, y1, x2, y2) in gt_boxes:
+        cv2.rectangle(out, (int(x1), int(y1)), (int(x2), int(y2)),
+                      gt_color, 2)
+        cv2.putText(out, gt_label,
+                    (int(x1), int(y1) - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, gt_color, 2)
+
+    # Predicted boxes
+    for (x1, y1, x2, y2, score) in pred_boxes:
+        cv2.rectangle(out, (int(x1), int(y1)), (int(x2), int(y2)),
+                      pred_color, 2)
+        cv2.putText(out, f"{pred_label}: {score:.2f}",
+                    (int(x1), int(y1) - 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, pred_color, 2)
+
+    return out
 
 # ============================================================
 #                     TEST SECTION

@@ -1,0 +1,20 @@
+[
+    {
+        "model": "ssd",
+        "num_images": 101,
+        "total_time_sec": 33.05512762069702,
+        "fps": 3.0555017411810024
+    },
+    {
+        "model": "yolo",
+        "num_images": 101,
+        "total_time_sec": 16.230359077453613,
+        "fps": 6.2229060686835975
+    },
+    {
+        "model": "ensemble",
+        "num_images": 101,
+        "total_time_sec": 50.994145154953,
+        "fps": 1.9806195337346484
+    }
+]
