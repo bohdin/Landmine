@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Landmine Detection</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+        .upload-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        #loader {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="container py-5">
+
+    <h1 class="text-center mb-4">🔥 Landmine Detection System</h1>
+
+    <!-- ==== Upload form ==== -->
+    <div class="upload-box mx-auto col-md-6">
+
+        <form id="detectForm" enctype="multipart/form-data">
+
+            <!-- File -->
+            <div class="mb-3">
+                <label class="form-label">Choose Image</label>
+                <input class="form-control" type="file" name="file" required>
+            </div>
+
+            <!-- Model -->
+            <div class="mb-3">
+                <label class="form-label">Select Model</label>
+                <select class="form-select" name="mode">
+                    <option value="ssd">SSD</option>
+                    <option value="yolo">YOLO</option>
+                    <option selected value="ensemble">Ensemble (WBF)</option>
+                </select>
+            </div>
+
+            <!-- Threshold -->
+            <div class="mb-3">
+                <label class="form-label">Confidence Threshold</label>
+                <input class="form-range"
+                       type="range"
+                       name="threshold"
+                       min="0"
+                       max="1"
+                       step="0.01"
+                       value="0.4"
+                       oninput="document.getElementById('thr_value').innerText = this.value">
+                <div class="text-center">Value: <span id="thr_value">0.4</span></div>
+            </div>
+
+            <!-- Show all boxes -->
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" name="draw_all" value="true" id="draw_all_box">
+                <label class="form-check-label" for="draw_all_box">
+                    Show all boxes (SSD + YOLO + Ensemble)
+                </label>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn btn-primary w-100 mt-3" type="submit">Detect</button>
+
+            <!-- Loader -->
+            <div id="loader" class="text-center mt-3">
+                <div class="spinner-border text-primary"></div>
+                <p>Processing image...</p>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ==== Buttons ==== -->
+    <div class="mt-4 text-center">
+        <button class="btn btn-secondary" onclick="loadHistory()">Show History</button>
+    </div>
+
+    <!-- ==== Result ==== -->
+    <div id="result" class="mt-5 text-center" style="display:none;"></div>
+
+    <!-- ==== History ==== -->
+    <div id="history_box" class="mt-5" style="display:none;"></div>
+
+
+    <!-- ==== Script ==== -->
+    <script>
+        const resultBox = document.getElementById("result");
+        const historyBox = document.getElementById("history_box");
+        const loader = document.getElementById("loader");
+
+        function showResult() {
+            resultBox.style.display = "block";
+            historyBox.style.display = "none";
+        }
+
+        function showHistory() {
+            historyBox.style.display = "block";
+            resultBox.style.display = "none";
+        }
+
+        // ===== DETECTION HANDLER =====
+        const form = document.getElementById("detectForm");
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            loader.style.display = "block";
+
+            const formData = new FormData(form);
+
+            const res = await fetch("/api/detect", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+            loader.style.display = "none";
+
+            showResult();   // hide history, show result
+
+            resultBox.innerHTML = `
+                <div class="card shadow p-3 mb-5 bg-body rounded">
+
+                    <h4>Detection Result</h4>
+
+                    <button class="btn btn-outline-secondary mb-2"
+                            onclick="document.getElementById('det_img').src='${data.original_url}'">
+                        Show Original
+                    </button>
+
+                    <button class="btn btn-outline-primary mb-2"
+                            onclick="document.getElementById('det_img').src='${data.image_url}'">
+                        Show Detected
+                    </button>
+
+                    <img id="det_img"
+                         src="${data.image_url}"
+                         class="img-fluid rounded mt-3">
+
+                    <h5 class="mt-4">Predictions</h5>
+                    <pre class="text-start bg-light p-3 rounded">${JSON.stringify(data.predictions, null, 2)}</pre>
+
+                </div>
+            `;
+        };
+
+
+        // ===== HISTORY HANDLER =====
+        async function loadHistory() {
+            const res = await fetch("/api/history");
+            const history = await res.json();
+
+            showHistory();  // hide result, show history
+
+            if (!history.length) {
+                historyBox.innerHTML = "<p>No history yet.</p>";
+                return;
+            }
+
+            let html = "<h3>History</h3>";
+
+            history.forEach(item => {
+                html += `
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <b>${item.timestamp}</b><br>
+                            Model: <code>${item.model}</code><br>
+                            Threshold: <code>${item.threshold}</code><br>
+                            <img src="${item.result}"
+                                 width="200"
+                                 class="mt-2 rounded">
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyBox.innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>
