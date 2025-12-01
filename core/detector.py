@@ -1,15 +1,20 @@
 from core.ssd_inference import SSDModel
 from core.yolo_inference import YOLO_ONNX
 from core.ensemble_inference import ensemble_boxes_custom
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Detector:
     def __init__(self, ssd_conf = 0.4, yolo_conf = 0.4):
         print("Loading SSD...")
-        self.ssd = SSDModel("E:\\Code\\Mag_diploma\\Landmine\\models\\ssd300.pth", device="cpu", conf_threshold= ssd_conf)
+        ssd_path = BASE_DIR / "models" / "ssd300.pth"
+        self.ssd = SSDModel(str(ssd_path), device="cpu", conf_threshold= ssd_conf)
 
         print("Loading YOLO...")
-        self.yolo = YOLO_ONNX("E:\\Code\\Mag_diploma\\Landmine\\models\\yolo.onnx", conf_threshold = yolo_conf)
+        yolo_path = BASE_DIR / "models" / "yolo.onnx"
+        self.yolo = YOLO_ONNX(str(yolo_path), conf_threshold = yolo_conf)
 
     def predict(self, img, mode="ensemble"):
         orig_h, orig_w = img.shape[:2]

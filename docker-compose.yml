@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: landmine-backend
+    restart: unless-stopped
+    volumes:
+      # моделі
+      - ./models:/app/models
+      # результати та завантажені зображення
+      - ./web/static/results:/app/web/static/results
+      - ./web/static/uploaded:/app/web/static/uploaded
+      # історія детекцій
+      - ./web/history.json:/app/web/history.json
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  nginx:
+    image: nginx:alpine
+    container_name: landmine-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"   # ти як і раніше заходиш на http://localhost:8000
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend

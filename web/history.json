@@ -1,5 +1,68 @@
 [
     {
+        "timestamp": "2025-12-01 20:30:21",
+        "model": "ensemble",
+        "threshold": 0.79,
+        "original": "/static/uploaded/6ee0892d-ddbe-4e07-ab9a-3e597e8910e2_original.jpg",
+        "result": "/static/results/ec156ebe-a44f-43f9-aa06-0ae6e7482518.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:30:13",
+        "model": "ensemble",
+        "threshold": 0.64,
+        "original": "/static/uploaded/5b1edfb9-318b-42e4-9a0e-726603a235c1_original.jpg",
+        "result": "/static/results/2bb56cd8-fe24-4615-adcb-ccd8569bdf4a.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:30:00",
+        "model": "ensemble",
+        "threshold": 0.54,
+        "original": "/static/uploaded/ef468448-f9d4-4662-aee0-2e3836420633_original.jpg",
+        "result": "/static/results/96e94a8e-6fcc-483f-b054-aac8fd769d20.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:29:52",
+        "model": "yolo",
+        "threshold": 0.54,
+        "original": "/static/uploaded/9e898490-7606-4b2c-8533-3090f80203cd_original.jpg",
+        "result": "/static/results/e5211c3a-2cea-4863-84fe-10caddb20738.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:29:47",
+        "model": "yolo",
+        "threshold": 0.8,
+        "original": "/static/uploaded/98f55d6c-ada1-41e1-8eae-3b26f899f9f9_original.jpg",
+        "result": "/static/results/7ce160bc-010f-4822-ba4a-d4b08b118b73.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:29:36",
+        "model": "yolo",
+        "threshold": 0.61,
+        "original": "/static/uploaded/84b7fd5a-a751-4a78-aa73-35d592ac40d2_original.jpg",
+        "result": "/static/results/0640b935-d994-402d-a4c3-e6c885fda001.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:28:44",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/static/uploaded/b701aa50-86c3-44ce-b1b9-67a1e8938159_original.jpg",
+        "result": "/static/results/467d6c90-22f1-4f6a-ba0d-81e8ca3366ea.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:28:32",
+        "model": "yolo",
+        "threshold": 0.4,
+        "original": "/static/uploaded/fd925831-ea70-4ef8-ac77-fa32187f6573_original.jpg",
+        "result": "/static/results/4fdd8903-a3e3-425f-a434-8660ecde3096.jpg"
+    },
+    {
+        "timestamp": "2025-12-01 20:28:26",
+        "model": "ssd",
+        "threshold": 0.4,
+        "original": "/static/uploaded/34dcce51-3264-4ac8-b51a-7cf5b6fed857_original.jpg",
+        "result": "/static/results/b7cd6a68-c241-4c05-851b-bf7f841c6f68.jpg"
+    },
+    {
         "timestamp": "2025-12-01 01:34:23",
         "model": "ensemble",
         "threshold": 0.4,
@@ -75,68 +138,5 @@
         "threshold": 0.4,
         "original": "/static/uploaded/9f32a6eb-cb57-4d3b-a5c3-ad3191205175_original.jpg",
         "result": "/static/results/c0f25100-09c4-4d5d-b148-a90a059c73ab.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:26:19",
-        "model": "ssd",
-        "threshold": 0.4,
-        "original": "/static/uploaded/1d5ab995-010b-4dc1-827f-f0a393061c20_original.jpg",
-        "result": "/static/results/b3c070aa-a402-448f-9b5a-22d05d163741.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:26:12",
-        "model": "auto",
-        "threshold": 0.4,
-        "original": "/static/uploaded/a2a4d5aa-574e-4626-ae9c-96128b2e4ad9_original.jpg",
-        "result": "/static/results/4515aa4d-5baa-4955-9583-4f87459ca1f0.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:26:07",
-        "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/38860200-d9e9-48f7-9134-1d04e48b2869_original.jpg",
-        "result": "/static/results/be6c842d-b839-4623-96c7-6fe178b90d1b.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:26:03",
-        "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/b35df733-8556-43f6-a8f9-69e88c823370_original.jpg",
-        "result": "/static/results/ed3bfa5d-4265-4623-a7a5-ceb4c59a9bae.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:21:48",
-        "model": "ensemble",
-        "threshold": 0.33,
-        "original": "/static/uploaded/401d4b9b-ad73-4c10-b29a-4b7aedea069c_original.jpg",
-        "result": "/static/results/61ed5820-bcd9-4ebe-8c6e-8fb48c5a7ebf.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:21:40",
-        "model": "yolo",
-        "threshold": 0.61,
-        "original": "/static/uploaded/412fb596-cbc4-4482-a61d-00ec8ca2bfc7_original.jpg",
-        "result": "/static/results/e2927947-dc73-4b9f-8af2-0fd301ee62c4.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:21:34",
-        "model": "ensemble",
-        "threshold": 0.61,
-        "original": "/static/uploaded/dd1bdfd0-bcd1-4a4e-bdc4-a79274d08d78_original.jpg",
-        "result": "/static/results/5228af12-55ae-4771-a637-9819f8aee295.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:21:31",
-        "model": "ensemble",
-        "threshold": 0.61,
-        "original": "/static/uploaded/46503cbd-c143-4763-a469-7b5053a26c3a_original.jpg",
-        "result": "/static/results/cd4d9aec-f503-439a-ac7b-daf45015b920.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:21:14",
-        "model": "auto",
-        "threshold": 0.61,
-        "original": "/static/uploaded/db223b45-b868-4595-bcf2-eb0c4b65a3cb_original.jpg",
-        "result": "/static/results/f822ff35-becc-482f-9009-b3fb0b9ee5ee.jpg"
     }
 ]
