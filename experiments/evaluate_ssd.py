@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Add root folder to Python path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -14,9 +13,6 @@ from experiments.metrics import iou, precision_recall_f1, average_precision_from
 from core.utils import draw_preds_and_gt
 
 
-# ================================
-# Load YOLO ground truth annotation
-# ================================
 
 def load_yolo_label(label_path, orig_w, orig_h):
     """
@@ -32,7 +28,6 @@ def load_yolo_label(label_path, orig_w, orig_h):
         for line in f.readlines():
             cls, x, y, w, h = map(float, line.split())
 
-            # Convert from normalized YOLO to absolute box coordinates
             x1 = (x - w/2) * orig_w
             y1 = (y - h/2) * orig_h
             x2 = (x + w/2) * orig_w
@@ -43,12 +38,9 @@ def load_yolo_label(label_path, orig_w, orig_h):
     return boxes
 
 
-# ================================
-# Main evaluation
-# ================================
 
 def evaluate_ssd():
-    detector = Detector()   # loads SSD + YOLO, but we use only SSD mode
+    detector = Detector()
 
     images_dir = "data/test_images/images"
     labels_dir = "data/test_images/labels"
@@ -79,17 +71,13 @@ def evaluate_ssd():
 
         h, w = img.shape[:2]
 
-        # Load ground truth
         gt_boxes = load_yolo_label(label_path, w, h)
 
-        # SSD prediction
         preds = detector.predict(img, mode="ssd")["ssd"]
 
-        # Save visualization
         vis = draw_preds_and_gt(img, preds, gt_boxes, (255, 0, 0), pred_label="SSD")
         cv2.imwrite(os.path.join(vis_dir, filename), vis)
 
-        # Evaluate IoU for each GT
         matched = set()
         for pred in preds:
             p_box = pred[:4]
@@ -116,19 +104,16 @@ def evaluate_ssd():
                 all_scores.append(p_score)
                 all_labels.append(0)
 
-        # Count false negatives
         for idx in range(len(gt_boxes)):
             if idx not in matched:
                 fn += 1
 
-    # Compute final metrics
     precision, recall, f1 = precision_recall_f1(tp, fp, fn)
     total_gt = tp + fn
     ap = average_precision_from_scores(all_scores, all_labels, total_gt)
     mean_iou = np.mean(iou_list) if iou_list else 0
-    map50 = ap   # AP@0.5 threshold
+    map50 = ap
 
-    # Save metrics
     metrics = {
         "TP": tp,
         "FP": fp,

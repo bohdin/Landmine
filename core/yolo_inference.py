@@ -4,6 +4,7 @@ import onnxruntime as ort
 
 
 class YOLO_ONNX:
+    """ONNX-версія YOLO з простим постпроцесом NMS."""
     def __init__(self, model_path="models/yolo.onnx", conf_threshold=0.4, iou_threshold=0.5):
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
@@ -16,6 +17,7 @@ class YOLO_ONNX:
         self.input_name = self.session.get_inputs()[0].name
 
     def preprocess(self, img):
+        """Ресайз 640x640, BGR->RGB, нормалізація, CHW."""
         h0, w0 = img.shape[:2]
         img_resized = cv2.resize(img, (640, 640))
         img_norm = img_resized[:, :, ::-1].astype(np.float32) / 255.0
@@ -52,8 +54,11 @@ class YOLO_ONNX:
         return inter / (area1 + area2 - inter + 1e-6)
 
     def predict(self, img):
+        """Повертає бокси [x1, y1, x2, y2, score] у координатах оригіналу."""
         inp, (h0, w0) = self.preprocess(img)
         out = self.session.run(None, {self.input_name: inp})[0]
+
+        print("OUT SHAPE:", out.shape)
 
         out = np.squeeze(out)
         out = out.transpose(1, 0)
@@ -99,7 +104,7 @@ class YOLO_ONNX:
 
 if __name__ == "__main__":
     model = YOLO_ONNX(
-        model_path=r"E:\Code\Mag_diploma\Landmine\models\yolo.onnx"
+        model_path=r"E:\Code\Mag_diploma\Landmine\models\yolo.onnx",
     )
 
     img = cv2.imread(
@@ -112,7 +117,6 @@ if __name__ == "__main__":
     img_copy = img.copy()
 
 
-    # YOLO box — green
     x1, y1, x2, y2, _ = preds[0]
     cv2.rectangle(img_copy, (int(x1),int(y1)), (int(x2),int(y2)), (0,255,0), 2)
 

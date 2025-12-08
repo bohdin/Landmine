@@ -17,9 +17,6 @@ LOSS_DIR = os.path.join(DATA_DIR, "loss_history")
 PLOTS_DIR = os.path.join(RESULTS_DIR, "plots")
 
 
-# ---------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------
 
 def ensure_dirs():
     os.makedirs(PLOTS_DIR, exist_ok=True)
@@ -36,9 +33,6 @@ def load_csv_dicts(path):
         return list(reader)
 
 
-# ---------------------------------------------------------
-# Load metrics / speed / PR
-# ---------------------------------------------------------
 
 def load_metrics():
     metrics = {}
@@ -69,16 +63,10 @@ def load_pr_curves():
     return pr
 
 
-# ---------------------------------------------------------
-# Radar chart & grouped bars
-# ---------------------------------------------------------
 
 def plot_radar(metrics, speed):
     labels = ["Precision", "Recall", "F1", "IoU_mean", "mAP50", "FPS"]
 
-    # -----------------------------
-    # NORMALIZATION (0–1 scale)
-    # -----------------------------
     max_fps = max(speed[m]["fps"] for m in ["ssd", "yolo", "ensemble"])
 
     def norm_vals(m):
@@ -88,7 +76,7 @@ def plot_radar(metrics, speed):
             metrics[m]["F1"],
             metrics[m]["IoU_mean"],
             metrics[m]["mAP50"],
-            speed[m]["fps"] / max_fps,   # normalize FPS → 0–1
+            speed[m]["fps"] / max_fps,
         ]
 
     models = ["ssd", "yolo", "ensemble"]
@@ -156,9 +144,6 @@ def plot_grouped_bars(metrics, speed):
     print("Saved:", out_path)
 
 
-# ---------------------------------------------------------
-# PR curves
-# ---------------------------------------------------------
 
 def plot_pr_curves(pr_curves):
     plt.figure(figsize=(8, 6))
@@ -182,9 +167,6 @@ def plot_pr_curves(pr_curves):
     print("Saved:", out_path)
 
 
-# ---------------------------------------------------------
-# Speed vs accuracy
-# ---------------------------------------------------------
 
 def plot_speed_vs_accuracy(metrics, speed):
     plt.figure(figsize=(8, 6))
@@ -208,9 +190,6 @@ def plot_speed_vs_accuracy(metrics, speed):
     print("Saved:", out_path)
 
 
-# ---------------------------------------------------------
-# TP / FP / FN bar chart
-# ---------------------------------------------------------
 
 def plot_error_bars(metrics):
     models = ["ssd", "yolo", "ensemble"]
@@ -239,15 +218,11 @@ def plot_error_bars(metrics):
     print("Saved:", out_path)
 
 
-# ---------------------------------------------------------
-# Loss history plots
-# ---------------------------------------------------------
 
 def plot_ssd_loss():
-    path = os.path.join(LOSS_DIR, "sdd300_loss_history.json")
+    path = os.path.join(LOSS_DIR, 'loss_history', "sdd300_loss_history.json")
     hist = load_json(path)
 
-    # очікуємо структуру: {"training_loss": [...], "validation_loss": [...]}
     train = hist.get("training_loss", [])
     val = hist.get("validation_loss", [])
 
@@ -272,51 +247,52 @@ def plot_ssd_loss():
     print("Saved:", out_path)
 
 
-def plot_yolo_loss():
+def plot_yolo_total_loss_with_val():
     path = os.path.join(LOSS_DIR, "yolo_history.csv")
     rows = load_csv_dicts(path)
 
     if not rows:
         return
 
-    # беремо колонку 'epoch', плюс усі числові колонки (окрім epoch)
     epochs = [int(r.get("epoch", i + 1)) for i, r in enumerate(rows)]
 
-    # знайти всі числові ключі
-    numeric_cols = []
-    for k in rows[0].keys():
-        if k.lower() == "epoch":
-            continue
-        try:
-            float(rows[0][k])
-            numeric_cols.append(k)
-        except ValueError:
-            continue
+    train_total_loss = []
+    val_total_loss = []
 
-    # обмежимося 3–4 кривими, щоб не було каші
-    numeric_cols = numeric_cols[:4]
+    for r in rows:
+        try:
+            box = float(r.get("train/box_loss", 0))
+            cls = float(r.get("train/cls_loss", 0))
+            dfl = float(r.get("train/dfl_loss", 0))
+            train_total_loss.append(box + cls + dfl)
+        except ValueError:
+            train_total_loss.append(0)
+
+        try:
+            vbox = float(r.get("val/box_loss", 0))
+            vcls = float(r.get("val/cls_loss", 0))
+            vdfl = float(r.get("val/dfl_loss", 0))
+            val_total_loss.append(vbox + vcls + vdfl)
+        except ValueError:
+            val_total_loss.append(0)
 
     plt.figure(figsize=(8, 6))
-    for col in numeric_cols:
-        values = [float(r[col]) for r in rows]
-        plt.plot(epochs, values, label=col)
+    plt.plot(epochs, train_total_loss, label="Train Total Loss", color="red")
+    plt.plot(epochs, val_total_loss, label="Validation Total Loss", color="blue")
 
     plt.xlabel("Epoch")
-    plt.ylabel("Loss / metric")
-    plt.title("YOLO training history")
+    plt.ylabel("Total Loss")
+    plt.title("YOLO Total Loss (Train + Validation)")
     plt.grid(True, linestyle="--", alpha=0.3)
     plt.legend()
 
-    out_path = os.path.join(PLOTS_DIR, "loss_yolo.png")
+    out_path = os.path.join(PLOTS_DIR, "total_loss_yolo.png")
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
     print("Saved:", out_path)
 
 
-# ---------------------------------------------------------
-# Main
-# ---------------------------------------------------------
 
 def main():
     ensure_dirs()
@@ -331,7 +307,7 @@ def main():
     plot_speed_vs_accuracy(metrics, speed)
     plot_error_bars(metrics)
     plot_ssd_loss()
-    plot_yolo_loss()
+    plot_yolo_total_loss_with_val()
 
     print("\nAll plots generated in:", PLOTS_DIR)
 

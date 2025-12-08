@@ -6,18 +6,20 @@ import torch
 from torchvision.models.detection import ssd300_vgg16
 from torchvision.models.detection.ssd import SSDHead
 from torchvision.models.detection import _utils as det_utils
+from torchvision.ops import nms
 
 
 class SSDModel:
-    def __init__(self, weight_path="models/ssd300.pth", device="cpu", conf_threshold=0.4):
+    """SSD300 (VGG16) з конфігурованими порогами впевненості та IoU."""
+
+    def __init__(self, weight_path="models/ssd300.pth", device="cpu", conf_threshold=0.4, iou_threshold=0.5):
         self.device = device
         self.conf_threshold = conf_threshold
+        self.iou_threshold = iou_threshold
         self.input_size = 480
 
-        # Create SSD arch
         self.model = ssd300_vgg16(weights=None)
 
-        # Rebuild HEAD for 1-class detection
         in_channels = det_utils.retrieve_out_channels(self.model.backbone, (self.input_size, self.input_size))
         num_anchors = self.model.anchor_generator.num_anchors_per_location()
 
@@ -27,7 +29,6 @@ class SSDModel:
             num_classes=2
         )
 
-        # Load weights
         state_dict = torch.load(weight_path, map_location=device)
         self.model.load_state_dict(state_dict)
 
@@ -35,6 +36,7 @@ class SSDModel:
         self.model.eval()
 
     def preprocess(self, img):
+        """Готує зображення до SSD: ресайз 480x480, нормалізація, CHW."""
         img_resized = cv2.resize(img, (self.input_size, self.input_size))
         img_resized = img_resized.astype(np.float32) / 255.0
         img_resized = img_resized.transpose(2, 0, 1)
@@ -42,17 +44,27 @@ class SSDModel:
         return tensor
 
     def predict(self, img):
+        """Повертає список боксів [x1, y1, x2, y2, score] у координатах оригіналу."""
         orig_h, orig_w = img.shape[:2]
 
-        # preprocess
         tensor = self.preprocess(img).to(self.device)
 
-        # predict
         with torch.no_grad():
             out = self.model(tensor)[0]
 
-        boxes = out["boxes"].cpu().numpy()
-        scores = out["scores"].cpu().numpy()
+        boxes = out["boxes"]
+        scores = out["scores"]
+
+        mask = scores >= self.conf_threshold
+        boxes = boxes[mask]
+        scores = scores[mask]
+
+        if len(boxes) == 0:
+            return []
+
+        keep_idx = nms(boxes, scores, self.iou_threshold)
+        boxes = boxes[keep_idx].cpu().numpy()
+        scores = scores[keep_idx].cpu().numpy()
 
         results = []
         for b, s in zip(boxes, scores):
@@ -81,7 +93,6 @@ if __name__ == "__main__":
     img_copy = img.copy()
 
 
-    # YOLO box — green
     x1, y1, x2, y2, _ = preds[0]
     cv2.rectangle(img_copy, (int(x1),int(y1)), (int(x2),int(y2)), (255,0,0), 2)
 

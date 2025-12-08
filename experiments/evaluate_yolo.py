@@ -4,7 +4,6 @@ import json
 import cv2
 import numpy as np
 
-# Add project root to import core/
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -17,9 +16,6 @@ from experiments.metrics import (
 )
 
 
-# =======================================================
-# Load YOLO label (ground truth)
-# =======================================================
 
 def load_yolo_label(label_path, orig_w, orig_h):
     """
@@ -45,12 +41,9 @@ def load_yolo_label(label_path, orig_w, orig_h):
     return boxes
 
 
-# =======================================================
-# Evaluation
-# =======================================================
 
 def evaluate_yolo():
-    detector = Detector()  # loads SSD + YOLO
+    detector = Detector()
 
     images_dir = "data/test_images/images"
     labels_dir = "data/test_images/labels"
@@ -80,13 +73,10 @@ def evaluate_yolo():
 
         h, w = img.shape[:2]
 
-        # Ground Truth
         gt_boxes = load_yolo_label(label_path, w, h)
 
-        # YOLO prediction
         preds = detector.predict(img, mode="yolo")["yolo"]
 
-        # Visualization
         out = draw_preds_and_gt(
                                     img,
                                     pred_boxes=preds,
@@ -107,7 +97,6 @@ def evaluate_yolo():
             best_iou = 0
             best_gt = -1
 
-            # find best matching GT box
             for idx, gt_box in enumerate(gt_boxes):
                 curr_iou = iou(p_box, gt_box)
                 if curr_iou > best_iou:
@@ -126,12 +115,10 @@ def evaluate_yolo():
                 all_scores.append(p_score)
                 all_labels.append(0)
 
-        # unmatched GT → FN
         for idx in range(len(gt_boxes)):
             if idx not in matched:
                 fn += 1
 
-    # Metrics
     precision, recall, f1 = precision_recall_f1(tp, fp, fn)
     total_gt = tp + fn
     ap = average_precision_from_scores(all_scores, all_labels, total_gt)
@@ -148,7 +135,6 @@ def evaluate_yolo():
         "mAP50": ap
     }
 
-    # Save metrics
     with open(os.path.join(results_dir, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=4)
 

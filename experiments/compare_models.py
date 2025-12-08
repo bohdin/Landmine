@@ -3,7 +3,6 @@ import sys
 import json
 import csv
 
-# Підключаємо корінь проєкту
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -32,7 +31,6 @@ def load_speed():
     with open(speed_path, "r") as f:
         data = json.load(f)
 
-    # Перетворити в dict: model -> row
     speed = {row["model"]: row for row in data}
     return speed
 
@@ -49,9 +47,6 @@ def main():
     metrics = load_metrics()
     speed = load_speed()
 
-    # ----------------------
-    # Формуємо таблицю CSV
-    # ----------------------
     header = [
         "Model",
         "Precision",
@@ -90,9 +85,6 @@ def main():
     save_csv_table(rows, csv_path)
     print("✓ Saved CSV:", csv_path)
 
-    # ----------------------
-    # JSON summary
-    # ----------------------
     summary = {
         "ssd": {
             **metrics["ssd"],

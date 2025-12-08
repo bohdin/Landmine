@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Add project root
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -157,12 +156,10 @@ def main():
     out_dir = "data/results/pr_curves"
     os.makedirs(out_dir, exist_ok=True)
 
-    # глобальна структура для накопичення статистики
     global_stats = {model: {thr: {"tp": 0, "fp": 0, "fn": 0}
                             for thr in thresholds}
                     for model in ["ssd", "yolo", "ensemble"]}
 
-    # === проходимо один раз по зображеннях ===
     for filename in os.listdir(images_dir):
         if not filename.lower().endswith((".jpg", ".png", ".jpeg")):
             continue
@@ -179,26 +176,20 @@ def main():
 
         preds_all = detector.predict(img, mode="ensemble")
 
-        # Локальна статистика по одному зображенню
         stats = evaluate_model(preds_all, gt_boxes, thresholds)
 
-        # додаємо до глобальної
         for model in ["ssd", "yolo", "ensemble"]:
             for thr in thresholds:
                 for key in ["tp", "fp", "fn"]:
                     global_stats[model][thr][key] += stats[model][thr][key]
 
-    # === перетворюємо TP/FP/FN → PR/F1 ===
     curves = compute_pr_curves(global_stats, thresholds)
 
-    # === зберігаємо CSV ===
     save_pr_csv(curves, out_dir)
 
-    # === окремі графіки ===
     for model in ["ssd", "yolo", "ensemble"]:
         plot_single(curves, model, out_dir)
 
-    # === загальна PR-крива ===
     plot_all(curves, out_dir)
 
     print("PR curves saved to:", out_dir)

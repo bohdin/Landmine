@@ -7,6 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Detector:
+    """Єдиний інтерфейс над SSD, YOLO та ансамблем."""
+
     def __init__(self, ssd_conf = 0.4, yolo_conf = 0.4):
         print("Loading SSD...")
         ssd_path = BASE_DIR / "models" / "ssd300.pth"
@@ -17,15 +19,13 @@ class Detector:
         self.yolo = YOLO_ONNX(str(yolo_path), conf_threshold = yolo_conf)
 
     def predict(self, img, mode="ensemble"):
+        """Повертає бокси у форматі {model_name: [[x1, y1, x2, y2, score], ...]}."""
         orig_h, orig_w = img.shape[:2]
 
-        # SSD
         ssd_boxes = self.ssd.predict(img) if mode in ("ssd", "ensemble") else []
 
-        # YOLO
         yolo_boxes = self.yolo.predict(img) if mode in ("yolo", "ensemble") else []
 
-        # Ensemble
         if mode == "ensemble":
             fused = ensemble_boxes_custom(ssd_boxes, yolo_boxes, orig_w, orig_h)
             return {"ssd": ssd_boxes, "yolo": yolo_boxes, "ensemble": fused}
@@ -50,8 +50,6 @@ if __name__ == "__main__":
     preds = det.predict(img, mode="ensemble")
     img_copy = img.copy()
 
-
-    # YOLO box — green
     x1, y1, x2, y2, _ = preds['ensemble'][0]
     cv2.rectangle(img_copy, (int(x1),int(y1)), (int(x2),int(y2)), (0,0,255), 2)
 

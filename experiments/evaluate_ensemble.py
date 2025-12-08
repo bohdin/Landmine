@@ -4,7 +4,6 @@ import json
 import cv2
 import numpy as np
 
-# Add project root to import core/
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -17,9 +16,6 @@ from experiments.metrics import (
 )
 
 
-# ============================================
-# Load YOLO label (ground truth)
-# ============================================
 
 def load_yolo_label(label_path, orig_w, orig_h):
     if not os.path.exists(label_path):
@@ -40,12 +36,9 @@ def load_yolo_label(label_path, orig_w, orig_h):
     return boxes
 
 
-# ============================================
-# Ensemble Evaluation
-# ============================================
 
 def evaluate_ensemble():
-    detector = Detector()  # loads SSD + YOLO + ensemble logic
+    detector = Detector()
 
     images_dir = "data/test_images/images"
     labels_dir = "data/test_images/labels"
@@ -75,13 +68,10 @@ def evaluate_ensemble():
 
         h, w = img.shape[:2]
 
-        # Load ground truth
         gt_boxes = load_yolo_label(label_path, w, h)
 
-        # Ensemble prediction
         preds = detector.predict(img, mode="ensemble")["ensemble"]
 
-        # Draw predictions + GT
         out = draw_preds_and_gt(
             img,
             pred_boxes=preds,
@@ -120,12 +110,10 @@ def evaluate_ensemble():
                 all_scores.append(p_score)
                 all_labels.append(0)
 
-        # FN = non-matched GT
         for idx in range(len(gt_boxes)):
             if idx not in matched:
                 fn += 1
 
-    # Metrics
     precision, recall, f1 = precision_recall_f1(tp, fp, fn)
     total_gt = tp + fn
     ap = average_precision_from_scores(all_scores, all_labels, total_gt)
@@ -142,7 +130,6 @@ def evaluate_ensemble():
         "mAP50": ap
     }
 
-    # Save metrics
     with open(os.path.join(results_dir, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=4)
 

@@ -28,7 +28,9 @@
 
 <body class="container py-5">
 
-    <h1 class="text-center mb-4">🔥 Landmine Detection System</h1>
+    <h1 class="text-center mb-4">Система виявлення мін</h1>
+
+    <div id="errorBox" class="alert alert-danger d-none" role="alert"></div>
 
     <!-- ==== Upload form ==== -->
     <div class="upload-box mx-auto col-md-6">
@@ -37,23 +39,23 @@
 
             <!-- File -->
             <div class="mb-3">
-                <label class="form-label">Choose Image</label>
+                <label class="form-label">Оберіть зображення</label>
                 <input class="form-control" type="file" name="file" required>
             </div>
 
             <!-- Model -->
             <div class="mb-3">
-                <label class="form-label">Select Model</label>
+                <label class="form-label">Виберіть модель</label>
                 <select class="form-select" name="mode">
                     <option value="ssd">SSD</option>
                     <option value="yolo">YOLO</option>
-                    <option selected value="ensemble">Ensemble (WBF)</option>
+                    <option selected value="ensemble">Енсембл (WBF)</option>
                 </select>
             </div>
 
             <!-- Threshold -->
             <div class="mb-3">
-                <label class="form-label">Confidence Threshold</label>
+                <label class="form-label">Поріг впевненості</label>
                 <input class="form-range"
                        type="range"
                        name="threshold"
@@ -62,24 +64,24 @@
                        step="0.01"
                        value="0.4"
                        oninput="document.getElementById('thr_value').innerText = this.value">
-                <div class="text-center">Value: <span id="thr_value">0.4</span></div>
+                <div class="text-center">Значення: <span id="thr_value">0.4</span></div>
             </div>
 
             <!-- Show all boxes -->
             <div class="form-check mt-3">
                 <input class="form-check-input" type="checkbox" name="draw_all" value="true" id="draw_all_box">
                 <label class="form-check-label" for="draw_all_box">
-                    Show all boxes (SSD + YOLO + Ensemble)
+                    Показати всі бокси (SSD + YOLO + Ensemble)
                 </label>
             </div>
 
             <!-- Submit -->
-            <button class="btn btn-primary w-100 mt-3" type="submit">Detect</button>
+            <button class="btn btn-primary w-100 mt-3" type="submit">Запустити детекцію</button>
 
             <!-- Loader -->
             <div id="loader" class="text-center mt-3">
                 <div class="spinner-border text-primary"></div>
-                <p>Processing image...</p>
+                <p>Обробка зображення...</p>
             </div>
 
         </form>
@@ -87,7 +89,8 @@
 
     <!-- ==== Buttons ==== -->
     <div class="mt-4 text-center">
-        <button class="btn btn-secondary" onclick="loadHistory()">Show History</button>
+        <button class="btn btn-secondary" onclick="loadHistory()">Показати історію</button>
+        <a class="btn btn-outline-dark ms-2" href="/sim">Режим маршруту</a>
     </div>
 
     <!-- ==== Result ==== -->
@@ -102,10 +105,20 @@
         const resultBox = document.getElementById("result");
         const historyBox = document.getElementById("history_box");
         const loader = document.getElementById("loader");
+        const errorBox = document.getElementById("errorBox");
 
         function showResult() {
             resultBox.style.display = "block";
             historyBox.style.display = "none";
+            errorBox.classList.add("d-none");
+        }
+
+        function showError(msg) {
+            loader.style.display = "none";
+            resultBox.style.display = "none";
+            historyBox.style.display = "none";
+            errorBox.textContent = `Сталася помилка: ${msg}`;
+            errorBox.classList.remove("d-none");
         }
 
         function showHistory() {
@@ -119,44 +132,64 @@
         form.onsubmit = async (e) => {
             e.preventDefault();
             loader.style.display = "block";
+            errorBox.classList.add("d-none");
 
             const formData = new FormData(form);
+            const mode = formData.get("mode");
+            const threshold = formData.get("threshold");
 
-            const res = await fetch("/api/detect", {
-                method: "POST",
-                body: formData
-            });
+            try {
+                const res = await fetch("/api/detect", {
+                    method: "POST",
+                    body: formData
+                });
 
-            const data = await res.json();
-            loader.style.display = "none";
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(errText || `Запит не вдався (${res.status})`);
+                }
 
-            showResult();
-            historyBox.innerHTML = "";
+                const data = await res.json();
+                loader.style.display = "none";
 
-            resultBox.innerHTML = `
-                <div class="card shadow p-3 mb-5 bg-body rounded">
+                showResult();
+                historyBox.innerHTML = "";
 
-                    <h4>Detection Result</h4>
+                resultBox.innerHTML = `
+                    <div class="card shadow p-3 mb-5 bg-body rounded">
 
-                    <button class="btn btn-outline-secondary mb-2"
-                            onclick="document.getElementById('det_img').src='${data.original_url}'">
-                        Show Original
-                    </button>
+                        <h4 class="mb-3">Результат детекції</h4>
+                        <p class="text-muted mb-2">
+                            Модель: <code>${mode}</code>,
+                            Поріг: <code>${threshold}</code>
+                        </p>
 
-                    <button class="btn btn-outline-primary mb-2"
-                            onclick="document.getElementById('det_img').src='${data.image_url}'">
-                        Show Detected
-                    </button>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline-secondary"
+                                    onclick="document.getElementById('det_img').src='${data.original_url}'">
+                                Показати оригінал
+                            </button>
 
-                    <img id="det_img"
-                         src="${data.image_url}"
-                         class="img-fluid rounded mt-3">
+                            <button class="btn btn-outline-primary"
+                                    onclick="document.getElementById('det_img').src='${data.image_url}'">
+                                Показати результат
+                            </button>
+                        </div>
 
-                    <h5 class="mt-4">Predictions</h5>
-                    <pre class="text-start bg-light p-3 rounded">${JSON.stringify(data.predictions, null, 2)}</pre>
+                        <img id="det_img"
+                             src="${data.image_url}"
+                             class="img-fluid rounded mt-3">
 
-                </div>
-            `;
+                        <h5 class="mt-4">Прогнози</h5>
+                        <pre class="text-start bg-light p-3 rounded">${JSON.stringify(data.predictions, null, 2)}</pre>
+
+                    </div>
+                `;
+            } catch (err) {
+                showError(err.message || "Детекція не вдалася");
+            } finally {
+                loader.style.display = "none";
+            }
         };
 
 
@@ -168,19 +201,19 @@
             showHistory();  // hide result, show history
 
             if (!history.length) {
-                historyBox.innerHTML = "<p>No history yet.</p>";
+                historyBox.innerHTML = "<p>Історії ще немає.</p>";
                 return;
             }
 
-            let html = "<h3>History</h3>";
+            let html = "<h3>Історія</h3>";
 
             history.forEach(item => {
                 html += `
                     <div class="card mb-3 shadow-sm">
                         <div class="card-body">
                             <b>${item.timestamp}</b><br>
-                            Model: <code>${item.model}</code><br>
-                            Threshold: <code>${item.threshold}</code><br>
+                            Модель: <code>${item.model}</code><br>
+                            Поріг: <code>${item.threshold}</code><br>
                             <img src="${item.result}"
                                  width="200"
                                  class="mt-2 rounded">

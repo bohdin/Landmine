@@ -1,142 +1,142 @@
 [
     {
-        "timestamp": "2025-12-01 20:30:21",
-        "model": "ensemble",
-        "threshold": 0.79,
-        "original": "/static/uploaded/6ee0892d-ddbe-4e07-ab9a-3e597e8910e2_original.jpg",
-        "result": "/static/results/ec156ebe-a44f-43f9-aa06-0ae6e7482518.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:30:13",
-        "model": "ensemble",
-        "threshold": 0.64,
-        "original": "/static/uploaded/5b1edfb9-318b-42e4-9a0e-726603a235c1_original.jpg",
-        "result": "/static/results/2bb56cd8-fe24-4615-adcb-ccd8569bdf4a.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:30:00",
-        "model": "ensemble",
-        "threshold": 0.54,
-        "original": "/static/uploaded/ef468448-f9d4-4662-aee0-2e3836420633_original.jpg",
-        "result": "/static/results/96e94a8e-6fcc-483f-b054-aac8fd769d20.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:29:52",
-        "model": "yolo",
-        "threshold": 0.54,
-        "original": "/static/uploaded/9e898490-7606-4b2c-8533-3090f80203cd_original.jpg",
-        "result": "/static/results/e5211c3a-2cea-4863-84fe-10caddb20738.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:29:47",
-        "model": "yolo",
-        "threshold": 0.8,
-        "original": "/static/uploaded/98f55d6c-ada1-41e1-8eae-3b26f899f9f9_original.jpg",
-        "result": "/static/results/7ce160bc-010f-4822-ba4a-d4b08b118b73.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:29:36",
-        "model": "yolo",
-        "threshold": 0.61,
-        "original": "/static/uploaded/84b7fd5a-a751-4a78-aa73-35d592ac40d2_original.jpg",
-        "result": "/static/results/0640b935-d994-402d-a4c3-e6c885fda001.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:28:44",
-        "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/b701aa50-86c3-44ce-b1b9-67a1e8938159_original.jpg",
-        "result": "/static/results/467d6c90-22f1-4f6a-ba0d-81e8ca3366ea.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 20:28:32",
+        "timestamp": "2025-12-09 00:18:06",
         "model": "yolo",
         "threshold": 0.4,
-        "original": "/static/uploaded/fd925831-ea70-4ef8-ac77-fa32187f6573_original.jpg",
-        "result": "/static/results/4fdd8903-a3e3-425f-a434-8660ecde3096.jpg"
+        "original": "/static/uploaded/71b80c73-e6ee-4edc-8d2b-559ed15a4a10.jpg",
+        "result": "/static/results/12a6b07e-8250-44a2-b5ea-4af1b1bcd1de.jpg"
     },
     {
-        "timestamp": "2025-12-01 20:28:26",
-        "model": "ssd",
-        "threshold": 0.4,
-        "original": "/static/uploaded/34dcce51-3264-4ac8-b51a-7cf5b6fed857_original.jpg",
-        "result": "/static/results/b7cd6a68-c241-4c05-851b-bf7f841c6f68.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:34:23",
-        "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/9b277eef-9df3-4ceb-8443-1e032205f6ef_original.jpg",
-        "result": "/static/results/16526a0d-8948-4979-bad3-7688ed23ea7f.jpg"
-    },
-    {
-        "timestamp": "2025-12-01 01:34:19",
+        "timestamp": "2025-12-09 00:18:04",
         "model": "yolo",
         "threshold": 0.4,
-        "original": "/static/uploaded/963957a8-4c10-4955-b312-d9a03cb5b4da_original.jpg",
-        "result": "/static/results/bd30f214-21a9-49ee-9411-ddeaf2094019.jpg"
+        "original": "/static/uploaded/e901d9c3-7847-46f9-90cb-5b720d7fd741.jpg",
+        "result": "/static/results/ecd5fee8-f6f8-4c48-914b-146e6ee28a55.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:34:15",
-        "model": "ssd",
+        "timestamp": "2025-12-09 00:18:03",
+        "model": "yolo",
         "threshold": 0.4,
-        "original": "/static/uploaded/1fa2999e-3c10-4620-aa2e-7c0a8eb88fba_original.jpg",
-        "result": "/static/results/2fc58a40-07d8-4864-af34-c0d4481644f6.jpg"
+        "original": "/static/uploaded/8cb559c7-c6b5-470c-b058-9dcd732fd570.jpg",
+        "result": "/static/results/8ab0285b-1b59-4dd6-a411-7388af45f3a8.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:34:11",
+        "timestamp": "2025-12-09 00:18:02",
+        "model": "yolo",
+        "threshold": 0.4,
+        "original": "/static/uploaded/fe4b34f6-6260-467d-8966-8339524f465b.jpg",
+        "result": "/static/results/3a3f9bc4-774c-4cfb-8a00-c019d66a2972.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:17:59",
+        "model": "yolo",
+        "threshold": 0.4,
+        "original": "/static/uploaded/7491cd87-a2f9-4ca1-9a8a-203f6294160a.jpg",
+        "result": "/static/results/ceba02b2-6375-4476-ab61-ebe991252acc.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:17:53",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/4328d75c-b382-4118-ba20-3d319387b720_original.jpg",
-        "result": "/static/results/49274fb6-7036-455e-9d57-8f0f72276f7e.jpg"
+        "original": "/static/uploaded/f1f974df-58a7-4529-9a3c-a7a72f49ce2e.jpg",
+        "result": "/static/results/c915acb5-1882-4649-95a7-06bec54f103e.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:33:56",
+        "timestamp": "2025-12-09 00:17:50",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/3cd3ac7e-f1e8-43d1-8371-04136fe22951_original.jpg",
-        "result": "/static/results/6d27ad93-04b7-44ce-aa73-931e968c39ff.jpg"
+        "original": "/static/uploaded/3c03e7b0-549e-42aa-a01e-2b947262fe34.jpg",
+        "result": "/static/results/2aefb155-748e-4d15-aaa2-216317d2ca1d.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:33:41",
+        "timestamp": "2025-12-09 00:17:40",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/8f2ffb75-8104-42f5-9696-cfdebf39c64c_original.jpg",
-        "result": "/static/results/dd896310-edec-4666-9cdf-d014ff5ce9c9.jpg"
+        "original": "/static/uploaded/80c26bf9-e721-479b-b5ae-13a67db0ec0c.jpg",
+        "result": "/static/results/91ca7d72-1bed-41c7-b7d1-9a1432a8b98d.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:31:42",
+        "timestamp": "2025-12-09 00:17:38",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/cee48a8d-3d40-480b-9778-fcede2ba192e_original.jpg",
-        "result": "/static/results/1a66b28d-6f85-47ab-bd9c-8392a7c00db0.jpg"
+        "original": "/static/uploaded/441df0d7-812a-478a-bf93-101e1ad0a2f4.jpg",
+        "result": "/static/results/ffdabc5c-2020-49b3-b6a1-d27efd4e7955.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:31:36",
+        "timestamp": "2025-12-09 00:17:37",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/d174f47e-8c2b-4fc9-8e26-b9f2987fbcf6_original.jpg",
-        "result": "/static/results/9c9b0b17-f155-4d6d-8b77-69b27d243304.jpg"
+        "original": "/static/uploaded/2ffbecf5-2012-47ed-8ee0-8b63544956b0.jpg",
+        "result": "/static/results/2a8449dd-d5dd-4131-9942-f76cd7c9dc5f.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:31:29",
+        "timestamp": "2025-12-09 00:16:49",
         "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/69ba9a0a-a69c-4e7c-a544-04a3aedf3ceb_original.jpg",
-        "result": "/static/results/dc2c6725-7cfc-4201-b06c-25b64ad48bb0.jpg"
+        "threshold": 0.68,
+        "original": "/static/uploaded/734f87db-0ecd-4d29-9bbc-8e969585f5e6.jpg",
+        "result": "/static/results/9b2ab082-d555-4154-900a-023ff33f4a2b.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:31:26",
+        "timestamp": "2025-12-09 00:16:39",
         "model": "ensemble",
-        "threshold": 0.4,
-        "original": "/static/uploaded/aff95319-865a-4dfa-a223-e08822c2dc56_original.jpg",
-        "result": "/static/results/79e1c54f-9c67-4169-849d-223c326066a1.jpg"
+        "threshold": 0.22,
+        "original": "/static/uploaded/4161ac34-4f93-4617-b8a8-7b90e86f6acd.jpg",
+        "result": "/static/results/585a12af-e593-4289-b92e-b7a3b4873954.jpg"
     },
     {
-        "timestamp": "2025-12-01 01:28:50",
+        "timestamp": "2025-12-09 00:16:29",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/9f32a6eb-cb57-4d3b-a5c3-ad3191205175_original.jpg",
-        "result": "/static/results/c0f25100-09c4-4d5d-b148-a90a059c73ab.jpg"
+        "original": "/static/uploaded/2bec129f-2ffd-4c56-aefd-8a60542792f5.jpg",
+        "result": "/static/results/04e1a437-6d11-4fcb-9472-efa67dd58a2d.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:15:22",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/ce06f6a2-a6e6-4846-b8fa-64f20df5a7ba.jpg",
+        "result": "/static/results/e5f47685-6f31-4ad0-adc1-8676f97595ca.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:15:20",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/7b029dd6-b799-40ae-ad6e-5e518bfea5f6.jpg",
+        "result": "/static/results/0903c208-2c0b-4029-9656-b79874371b35.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:15:15",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/ba2f5551-b820-4445-b738-0d392d1f4a75.jpg",
+        "result": "/static/results/0c112617-da24-465b-abbb-b95ff5cc45a0.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:15:03",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/c98b5597-1cb3-45fc-ae7d-dd38b2f6e728.jpg",
+        "result": "/static/results/881336d6-7dfb-402f-9468-d396fad2c74c.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:15:02",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/dc0d1877-9c5c-4666-8486-647de8613fc3.jpg",
+        "result": "/static/results/afceaf13-841c-47ee-b9c2-f94380cf1ce1.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:14:03",
+        "model": "ensemble",
+        "threshold": 0.6,
+        "original": "/static/uploaded/3c041820-6887-47c3-9c35-a72c9aa587f8.jpg",
+        "result": "/static/results/6a4e0bcd-68d0-4daa-be62-9e7cbd5a1118.jpg"
+    },
+    {
+        "timestamp": "2025-12-09 00:13:50",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/static/uploaded/1cf6f46d-623d-4902-9373-51c599190fa0.jpg",
+        "result": "/static/results/f782323b-2578-4128-b3fb-55e4ed1c2141.jpg"
     }
 ]

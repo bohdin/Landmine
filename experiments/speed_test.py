@@ -5,7 +5,6 @@ import json
 import csv
 import cv2
 
-# Add project root
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -18,7 +17,6 @@ def measure_speed(detector, model_name, images_dir):
     Рахує total_time та FPS = num_images / total_time.
     """
 
-    # Беремо перші num_images файлів
     image_paths = []
     for fname in os.listdir(images_dir):
         if fname.lower().endswith((".jpg", ".png", ".jpeg")):
@@ -28,12 +26,11 @@ def measure_speed(detector, model_name, images_dir):
     if len(image_paths) == 0:
         raise RuntimeError("Немає тестових зображень!")
 
-    # Запуск
     start = time.time()
 
     for img_path in image_paths:
         img = cv2.imread(img_path)
-        detector.predict(img, mode=model_name)  # повний inference
+        detector.predict(img, mode=model_name)
 
     end = time.time()
 
@@ -63,11 +60,9 @@ def main():
         res = measure_speed(detector, model, images_dir)
         results.append(res)
 
-    # JSON
     with open(os.path.join(out_dir, "speed_results.json"), "w") as f:
         json.dump(results, f, indent=4)
 
-    # CSV
     with open(os.path.join(out_dir, "speed_results.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["model", "num_images", "total_time_sec", "fps"])
