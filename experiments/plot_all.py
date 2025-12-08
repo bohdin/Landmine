@@ -106,7 +106,7 @@ def plot_radar(metrics, speed):
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
@@ -141,7 +141,7 @@ def plot_grouped_bars(metrics, speed):
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
@@ -164,7 +164,7 @@ def plot_pr_curves(pr_curves):
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
@@ -187,7 +187,7 @@ def plot_speed_vs_accuracy(metrics, speed):
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
@@ -215,12 +215,12 @@ def plot_error_bars(metrics):
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
 def plot_ssd_loss():
-    path = os.path.join(LOSS_DIR, 'loss_history', "sdd300_loss_history.json")
+    path = os.path.join(LOSS_DIR, "sdd300_loss_history.json")
     hist = load_json(path)
 
     train = hist.get("training_loss", [])
@@ -244,7 +244,7 @@ def plot_ssd_loss():
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 def plot_yolo_total_loss_with_val():
@@ -290,7 +290,7 @@ def plot_yolo_total_loss_with_val():
     plt.tight_layout()
     plt.savefig(out_path, dpi=200)
     plt.close()
-    print("Saved:", out_path)
+    print(f"Збережено: {out_path}")
 
 
 
@@ -309,7 +309,7 @@ def main():
     plot_ssd_loss()
     plot_yolo_total_loss_with_val()
 
-    print("\nAll plots generated in:", PLOTS_DIR)
+    print(f"\nУсі графіки збережено в: {PLOTS_DIR}")
 
 
 if __name__ == "__main__":

@@ -58,8 +58,6 @@ class YOLO_ONNX:
         inp, (h0, w0) = self.preprocess(img)
         out = self.session.run(None, {self.input_name: inp})[0]
 
-        print("OUT SHAPE:", out.shape)
-
         out = np.squeeze(out)
         out = out.transpose(1, 0)
 

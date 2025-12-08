@@ -12,6 +12,7 @@ services:
       - ./web/static/results:/app/web/static/results   # результати детекцій
       - ./web/static/uploaded:/app/web/static/uploaded # оригінали завантажень
       - ./web/history.json:/app/web/history.json       # історія викликів
+      - ./data/test_images/images:/app/data/test_images/images:ro # тестові патчі для симулятора
     environment:
       - PYTHONUNBUFFERED=1
 

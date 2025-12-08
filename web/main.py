@@ -1,3 +1,5 @@
+import logging
+import os
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -5,9 +7,15 @@ from fastapi.templating import Jinja2Templates
 from web.router_detect import router as detect_router
 
 app = FastAPI()
+logger = logging.getLogger("uvicorn.error")
 
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
-app.mount("/test_images", StaticFiles(directory="data/test_images/images"), name="test_images")
+
+test_images_dir = "data/test_images/images"
+if os.path.isdir(test_images_dir):
+    app.mount("/test_images", StaticFiles(directory=test_images_dir), name="test_images")
+else:
+    logger.warning("Skip mounting /test_images: directory not found (%s)", test_images_dir)
 templates = Jinja2Templates(directory="web/templates")
 
 app.include_router(detect_router, prefix="/api")
