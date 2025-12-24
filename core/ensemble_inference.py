@@ -17,8 +17,13 @@ def ensemble_boxes_custom(boxes_ssd, boxes_yolo, orig_w, orig_h,
         bxs = []
         scores = []
         for b in boxes:
-            bxs.append([b[0] / orig_w, b[1] / orig_h,
-                        b[2] / orig_w, b[3] / orig_h])
+            x1 = max(0.0, min(1.0, b[0] / orig_w))
+            y1 = max(0.0, min(1.0, b[1] / orig_h))
+            x2 = max(0.0, min(1.0, b[2] / orig_w))
+            y2 = max(0.0, min(1.0, b[3] / orig_h))
+            x2 = max(x2, x1)
+            y2 = max(y2, y1)
+            bxs.append([x1, y1, x2, y2])
             scores.append(b[4])
         return bxs, scores
 
@@ -63,3 +68,25 @@ def ensemble_boxes_custom(boxes_ssd, boxes_yolo, orig_w, orig_h,
         results.append([float(x1), float(y1), float(x2), float(y2), float(score)])
 
     return results
+
+
+class EnsembleWBF:
+    """
+    Thin class wrapper so the ensemble can be used interchangeably with other detectors.
+    """
+
+    def __init__(self, iou_thr: float = 0.5, skip_box_thr: float = 0.4, weights=None):
+        self.iou_thr = iou_thr
+        self.skip_box_thr = skip_box_thr
+        self.weights = weights
+
+    def predict(self, boxes_ssd, boxes_yolo, orig_w: int, orig_h: int):
+        return ensemble_boxes_custom(
+            boxes_ssd,
+            boxes_yolo,
+            orig_w,
+            orig_h,
+            iou_thr=self.iou_thr,
+            skip_box_thr=self.skip_box_thr,
+            weights=self.weights,
+        )

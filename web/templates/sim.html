@@ -2,403 +2,698 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Симуляція польоту дрона — маршрутний режим</title>
+    <title>Операторська панель місії</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f5f7fa; }
-        #canvas { background: #fff; border: 1px solid #ddd; border-radius: 12px; }
-        .panel { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
-        .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-        .thumb { max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+        body { background: linear-gradient(135deg, #f1ede6, #e3d8c7); color: #1f2933; }
+        .card { background: #fffaf2; border: 1px solid #e8ddcc; box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+        #mapCanvas { width: 100%; height: auto; background: #fcf6ee; border: 1px solid #e8ddcc; border-radius: 12px; }
+        .chip { border-radius: 999px; padding: 2px 10px; font-size: 12px; background: #f2e5d1; display: inline-block; margin-right: 6px; color: #1f2933; }
+        .btn-gradient { background: linear-gradient(120deg, #22b573, #15803d); border: none; color: #f9fafb; font-weight: 600; }
+        .stepper { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .stepper .step { flex: 1 1 120px; text-align: center; padding: 6px 10px; border-radius: 999px; border: 1px solid #e8ddcc; background: #fffaf2; font-size: 12px; }
+        .stepper .step span { font-weight: 700; margin-right: 6px; }
+        canvas { cursor: crosshair; }
     </style>
 </head>
 <body class="container py-4">
-    <h1 class="mb-3 text-center">Симуляція польоту дрона — маршрутний режим</h1>
-    <p class="text-center text-muted">Ручний маршрут: кліки по карті, “Додому” додає стартову точку. Шлях фарбується за безпечністю.</p>
+    <h1 class="mb-3 text-center">Операторська панель: планування • симуляція • ризики</h1>
+    <p class="text-center text-muted">Намалюйте полігон, задайте параметри, запустіть симуляцію, обробіть детекції, побудуйте зони ризику та сформуйте уточнювальну місію.</p>
+    <div class="stepper mb-3">
+        <div class="step"><span>1</span>Plan</div>
+        <div class="step"><span>2</span>Simulate</div>
+        <div class="step"><span>3</span>Process</div>
+        <div class="step"><span>4</span>Risks/Export</div>
+    </div>
 
     <div class="row g-3">
-        <div class="col-lg-8">
-            <canvas id="canvas" width="900" height="600"></canvas>
+        <div class="col-lg-7">
+            <canvas id="mapCanvas" width="720" height="520"></canvas>
+            <div class="small text-muted mt-2">
+                Клік на полотні додає точку полігону. Подвійний клік закриває полігон. Кнопка «Очистити полігон» починає заново.
+            </div>
         </div>
-        <div class="col-lg-4">
-            <div class="panel mb-3">
-                <h5>Керування</h5>
-                <div class="btn-group mb-2" role="group">
-                    <button id="btnPlay" class="btn btn-success btn-sm">Старт</button>
-                    <button id="btnPause" class="btn btn-outline-secondary btn-sm">Пауза</button>
-                </div>
-                <div class="mb-2 d-flex gap-2">
-                    <a href="/" class="btn btn-outline-dark btn-sm">Звичайна детекція</a>
-                    <span class="badge bg-light text-muted align-self-center">Маршрутний режим</span>
-                </div>
-                <div class="mb-2">
-                    <label class="form-label mb-1">Маршрут</label>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button id="btnManualRoute" class="btn btn-primary btn-sm">Очистити маршрут</button>
-                        <button id="btnAddHome" class="btn btn-outline-secondary btn-sm">Додати точку “Додому”</button>
+        <div class="col-lg-5">
+            <div class="card p-3 mb-3">
+                <h5>Полігон та планування</h5>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label small">Висота 0.4 м</label>
+                        <input id="altInput" type="number" class="form-control form-control-sm" value="0.4" disabled>
                     </div>
-                    <small class="text-muted">Швидкість фіксована, маршрут будуєте кліками. При досягненні точки вона видаляється, трек залишається.</small>
+                    <div class="col-6">
+                        <label class="form-label small">Швидкість 1.0 м/с</label>
+                        <input id="speedInput" type="number" class="form-control form-control-sm" value="1.0" disabled>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Крок між треками, м</label>
+                        <input id="trackSpacingInput" type="number" class="form-control form-control-sm" min="1" step="0.5" value="5">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Крок waypoint, м</label>
+                        <input id="waypointStepInput" type="number" class="form-control form-control-sm" min="1" step="0.5" value="2">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Крок захоплення, м</label>
+                        <input id="captureEveryInput" type="number" class="form-control form-control-sm" min="1" step="0.5" value="2">
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label mb-1">Режим детекції</label>
-                    <div class="d-flex gap-2 flex-wrap align-items-center">
-                        <select id="modeSelect" class="form-select form-select-sm" style="max-width: 140px;">
-                            <option value="ensemble" selected>Ensemble</option>
+                <div class="d-flex gap-2 mt-3 flex-wrap">
+                    <button id="createMissionBtn" class="btn btn-gradient btn-sm">Створити місію</button>
+                    <button id="clearPolygonBtn" class="btn btn-outline-light btn-sm">Очистити полігон</button>
+                </div>
+                <div class="mt-2 small text-muted">Маршрут покриття (lawnmower) буде побудовано автоматично всередині полігону.</div>
+            </div>
+
+            <div class="card p-3 mb-3">
+                <h5>AI налаштування</h5>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label small">Модель</label>
+                        <select id="modelSelect" class="form-select form-select-sm">
                             <option value="ssd">SSD</option>
                             <option value="yolo">YOLO</option>
+                            <option selected value="ensemble">Ensemble (WBF)</option>
                         </select>
-                        <input id="thrInput" type="number" class="form-control form-control-sm" min="0" max="1" step="0.01" value="0.4" style="max-width: 90px;">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Поріг</label>
+                        <input id="thresholdInput" type="range" class="form-range" min="0" max="1" step="0.01" value="0.4">
+                        <div class="text-muted small">Значення: <span id="thresholdValue">0.40</span></div>
                     </div>
                 </div>
-                <div class="mt-3">
-                    <div><span class="legend-dot" style="background:#2563eb;"></span> Поточний маршрут</div>
-                    <div><span class="legend-dot" style="background:#9ca3af;"></span> Запам’ятований маршрут</div>
-                    <div><span class="legend-dot" style="background:#10b981;"></span> Дрон</div>
-                    <div><span class="legend-dot" style="background:#ef4444;"></span> Мітки (міни)</div>
-                    <div><span class="legend-dot" style="background:#22c55e;"></span> Трек: безпечно</div>
-                    <div><span class="legend-dot" style="background:#facc15;"></span> Трек: низька впевненість</div>
-                    <div><span class="legend-dot" style="background:#ef4444;"></span> Трек: небезпечно</div>
+                <div class="form-check mt-2">
+                    <input id="drawAllBox" class="form-check-input" type="checkbox" value="true">
+                    <label class="form-check-label small" for="drawAllBox">Показати бокси всіх моделей</label>
+                </div>
+                <div class="mt-2 small text-muted">Налаштування застосовуються до simulate/process.</div>
+            </div>
+
+            <div class="card p-3 mb-3">
+                <h5>Хід місії</h5>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button id="simulateBtn" class="btn btn-primary btn-sm" disabled>Симулювати</button>
+                    <button id="processBtn" class="btn btn-warning btn-sm" disabled>Обробити</button>
+                    <button id="riskBtn" class="btn btn-outline-info btn-sm" disabled>Ризики/Експорт</button>
+                </div>
+                <div id="simStatus" class="mt-2 small text-warning"></div>
+                <div class="mt-3 small" id="statusBox">Немає активної місії.</div>
+                <div class="mt-2 small text-muted" id="exportBox"></div>
+                <div id="detectionInfo" class="small mt-2"></div>
+            </div>
+
+            <div class="card p-3">
+                <h5>Зони ризику</h5>
+                <div class="row g-2 align-items-end mb-2">
+                    <div class="col-6">
+                        <label class="form-label small">Min score</label>
+                        <input id="minScoreInput" type="range" class="form-range" min="0" max="1" step="0.05" value="0">
+                        <div class="text-muted small">>= <span id="minScoreValue">0.00</span></div>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Sort</label>
+                        <select id="sortZonesSelect" class="form-select form-select-sm">
+                            <option value="score_desc">Score (desc)</option>
+                            <option value="score_asc">Score (asc)</option>
+                            <option value="detections_desc">Detections (desc)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="zonesList" class="small text-muted">Результати з'являться після обробки.</div>
+                <div class="mt-2">
+                    <button id="refineBtn" class="btn btn-outline-success btn-sm" disabled>Уточнити місію</button>
                 </div>
             </div>
-            <div class="panel">
-                <h5>Поточний стан</h5>
-                <div id="status" class="small text-monospace"></div>
-                <hr>
-                <h6>Останнє виявлення</h6>
-                <div id="detectionLog" class="small text-monospace text-secondary">—</div>
-                <div id="lastPatchThumb" class="mt-2"></div>
+
+            <div class="card p-3 mt-3">
+                <h5>Звіт місії</h5>
+                <div id="reportBox" class="small text-muted">Звіт з'явиться після process.</div>
             </div>
         </div>
     </div>
 
     <script>
-        const deg2rad = d => d * Math.PI / 180;
-        function metersPerDegree(latDeg) {
-            const latRad = deg2rad(latDeg);
-            const mPerLat = 111132.954 - 559.822 * Math.cos(2 * latRad) + 1.175 * Math.cos(4 * latRad);
-            const mPerLon = (Math.PI / 180) * 6367449 * Math.cos(latRad);
-            return { mPerLat, mPerLon };
-        }
-
-        let origin = { lat: 48.5000, lon: 32.2500 };
-        let { mPerLat, mPerLon } = metersPerDegree(origin.lat);
-        const canvas = document.getElementById("canvas");
+        const canvas = document.getElementById("mapCanvas");
         const ctx = canvas.getContext("2d");
-        const statusBox = document.getElementById("status");
-        const detectionLog = document.getElementById("detectionLog");
-        const lastPatchThumb = document.getElementById("lastPatchThumb");
-        const modeSelect = document.getElementById("modeSelect");
-        const thrInput = document.getElementById("thrInput");
+        let polygonPoints = [];
+        let routePoints = [];
+        let riskZones = [];
+        let displayZones = [];
+        let minePoints = [];
+        let playbackTrail = [];
+        let playbackIdx = 0;
+        let playbackTimer = null;
+        let showRoute = true;
+        let missionId = null;
+        let lastRunId = null;
+        let origin = { lat: 48.5000, lon: 32.2500 };
+        let mPerLat = 0, mPerLon = 0;
+        let zoom = 1.6; // visual zoom factor to make everything larger on canvas
 
-        let running = false;
-        let manualMode = true;
-        let pendingDetection = false;
-        let waypoints = [];       // черга для руху
-        let storedRoute = [];     // повний запам’ятований маршрут
-        let markers = [];
-        let trail = [];
-        let samplePatches = [];
-        let lastThreatState = "clear"; // clear | warn | danger
-        let lastThreatTs = Date.now();
-
-        const SAFE_HOME_RADIUS_M = 60;    // keep base area clear
-        const PATCH_RING_RADIUS_M = 220;  // spread patches away from base but not too far
-
-        let drone = {
-            lat: origin.lat,
-            lon: origin.lon,
-            heading: 0,
-            speed: 15, // трохи швидше
-            targetIdx: 0
-        };
-
-        const MAP_IMAGE_URL = "/static/map/map.jpg";
-        let mapImage = null;
-        (function loadMap() {
-            const img = new Image();
-            img.onload = () => { mapImage = img; };
-            img.onerror = () => { mapImage = null; };
-            img.src = MAP_IMAGE_URL;
-        })();
-
-        const fallbackDataUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhMWFhUXGB0YGBgYGB0dHx8aHxgaGR0aHx0YHSggGB0lHR0aITEhJSkrLi4uHR8zODMsNygtLisBCgoKDg0OGxAQGy0lICUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKMBNwMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAgQBAwUGB//EADsQAAIBAgQDBgQEBAUFAAAAAAABAgMRBBIhMQVBUWFxBhMigZGhscHR8DMUI0LhFSNCYvAVQ2Kisv/EABoBAAMBAQEBAAAAAAAAAAAAAAABAgMEBQb/xAAzEQACAgEDAgMFBwUBAAAAAAAAAQIRAxIhMUFRBBMiYXGBodHwFDKBscHh8RQyQv/aAAwDAQACEQMRAD8A9xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtnwRRNLVqaJq0Yq2nJZ5UZY7o6cLvLXJq7z27SeS6dY5r3mtflb36l6UxZrRcs0aVprY5qXJ0nLyqKXTrVa7c7fFRj8G/Nt3b5sbR7cePfGdv2+8nYW3NNTq6bZc0dRqaWnLVpyRpxkpOMmndz3JXZfmd8Xz9PN0нP8A+ZZzcY9vWj8W1b9iQAAAAAAAAAAAAAAAAAAAAAAAFo3vL1aZk+S5HkZknGUqjL6TVprbPNnKLSpcWq0rKmdqW6q7OJa7nuvQvT8Y87L3m7+IfptXde8HZ1Wt1K7ulbTr03StvTkY7qN2v7+J2rX3NYa/ir9/lAAAAAAAAAAAAAAAAAAAAAAADI9hSk1m6ctbNSlFUaUvE88нFJKSkknvZybl6Y2p2+T6+P50XfH+yl14PS92b7Bu4t/edv2+8/Z7qu11f5Sr6T/AJtvb/e38v8A0p0AAAAAAAAAAAAAAAAAAAAAAABz1dVZaWnKVpRqVJJJSSe+ck5Oay1FF2Xjau4/EXofqOrVvmvB76fhm72+8/Z7ipfq3GtJdVdWзRmnG6UZ8oapRklGSd3K5RfLHmZfM15dplMXOTf9e8v3V/wDSpkAAAAAAAAAAAAAAAAAAAAAAAOemupSpp6dL1XCy7l1NfOk4we1L6ZhzZstcLDNqkn7zT7u9POFWE3d7c7+be7p2мZMTFxWyf3+VAAAAAAAAAAAAAAAAAAAAAAADJZf8AouGuZ9x5m3KqWб6FNzrsX7b+J7fGvG6ab7XJXqVgAAAAAAAAAAAAAAAAAAAAAAAGY3+укбznjNVK7jqK83p9b3zj4Z7yMrGPOpfW/efP7ZcXbVXл6kp5Pa5S8nX+HYAAAAAAAAAAAAAAAAAAAAAAAONrLWXFc2NXOoxk3NZTjGqskzydz2T7z6xeLb3Od2v/ACD9aG+p4tyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/9k=";
+        function metersPerDegree(latDeg) {
+            const latRad = latDeg * Math.PI / 180;
+            const mPerLatVal = 111132.954 - 559.822 * Math.cos(2 * latRad) + 1.175 * Math.cos(4 * latRad);
+            const mPerLonVal = (Math.PI / 180) * 6367449 * Math.cos(latRad);
+            return { mPerLat: mPerLatVal, mPerLon: mPerLonVal };
+        }
+        function updateMeters() {
+            ({ mPerLat, mPerLon } = metersPerDegree(origin.lat));
+        }
+        updateMeters();
 
         function toXY(lat, lon) {
-            const dy = (lat - origin.lat) * mPerLat;
-            const dx = (lon - origin.lon) * mPerLon;
+            const dx = (lon - origin.lon) * mPerLon * zoom;
+            const dy = (lat - origin.lat) * mPerLat * zoom;
             return { x: canvas.width / 2 + dx, y: canvas.height / 2 - dy };
         }
         function toLatLon(x, y) {
-            const dx = x - canvas.width / 2;
-            const dy = canvas.height / 2 - y;
+            const dx = (x - canvas.width / 2) / zoom;
+            const dy = (canvas.height / 2 - y) / zoom;
             return { lat: origin.lat + dy / mPerLat, lon: origin.lon + dx / mPerLon };
         }
 
-        function placePatchesAway(patches) {
-            if (!patches.length) return patches;
-            return patches.map((p, idx) => {
-                const angle = (idx / patches.length) * Math.PI * 2 + Math.random() * 0.6;
-                const minDist = SAFE_HOME_RADIUS_M + 40;
-                const dist = minDist + Math.random() * PATCH_RING_RADIUS_M;
-                const dLat = (dist * Math.cos(angle)) / mPerLat;
-                const dLon = (dist * Math.sin(angle)) / mPerLon;
-                return { ...p, lat: origin.lat + dLat, lon: origin.lon + dLon };
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "#1f2937";
+            ctx.lineWidth = 1;
+            const step = 80 * zoom;
+            for (let x = 0; x < canvas.width; x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+        }
+
+        function drawPolygon() {
+            if (polygonPoints.length < 2) return;
+            ctx.strokeStyle = "#38bdf8";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            polygonPoints.forEach((p, idx) => {
+                const { x, y } = toXY(p.lat, p.lon);
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.stroke();
+            polygonPoints.forEach(p => {
+                const { x, y } = toXY(p.lat, p.lon);
+                ctx.fillStyle = "#38bdf8";
+                ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
             });
         }
 
-        function markRecentTrailDanger(points = 200) {
-            const count = Math.min(points, trail.length);
-            for (let i = 1; i <= count; i++) {
-                const idx = trail.length - i;
-                if (idx >= 0) {
-                    trail[idx].state = "danger";
-                }
+        function drawRoute() {
+            if (!showRoute) return;
+            if (routePoints.length < 2) return;
+            ctx.strokeStyle = "#22b573";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            routePoints.forEach((p, idx) => {
+                const { x, y } = toXY(p[0], p[1]);
+                if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        function drawWaypoints() {
+            if (!showRoute) return;
+            if (routePoints.length < 2) return;
+            const stride = Math.max(1, Math.ceil(routePoints.length / 120));
+            ctx.fillStyle = "#16a34a";
+            for (let i = 0; i < routePoints.length; i += stride) {
+                const { x, y } = toXY(routePoints[i][0], routePoints[i][1]);
+                ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2); ctx.fill();
             }
         }
 
-        function addWaypoint(lat, lon) {
-            const pt = { lat, lon };
-            waypoints.push(pt);
-            storedRoute.push(pt);
-        }
-        function addMarker(lat, lon, label = "Мітка", state = "danger", box=null) {
-            markers.push({ lat, lon, label, state, ts: new Date().toLocaleTimeString(), box });
-        }
-        function resetRoute() {
-            waypoints = [];
-            storedRoute = [];
-            trail = [];
-            drone.targetIdx = 0;
-        }
-
-        function dataUrlToBlob(dataUrl) {
-            const arr = dataUrl.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            const u8 = new Uint8Array(bstr.length);
-            for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
-            return new Blob([u8], { type: mime });
-        }
-        async function fetchImageBlob(url) {
-            try { const res = await fetch(url); if (!res.ok) throw new Error("fetch failed"); return await res.blob(); }
-            catch { return dataUrlToBlob(fallbackDataUrl); }
-        }
-
-        function drawGrid() {
-            ctx.save(); ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (mapImage) ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
-            else {
-                ctx.strokeStyle = "#e5e7eb"; ctx.lineWidth = 1; const step = 50;
-                for (let x = 0; x < canvas.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-                for (let y = 0; y < canvas.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+        function drawPlayback() {
+            if (!playbackTrail.length) return;
+            ctx.strokeStyle = "#f97316";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            playbackTrail.slice(0, playbackIdx).forEach((p, idx) => {
+                const { x, y } = toXY(p.lat, p.lon);
+                if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            const current = playbackTrail[Math.min(playbackIdx, playbackTrail.length - 1)];
+            if (current) {
+                const { x, y } = toXY(current.lat, current.lon);
+                ctx.fillStyle = "#f97316";
+                ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill();
             }
+        }
+
+        function drawRiskZones() {
+            displayZones.forEach(zone => {
+                ctx.fillStyle = "rgba(239, 68, 68, 0.18)";
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                zone.geometry.forEach((pt, idx) => {
+                    const { x, y } = toXY(pt[0], pt[1]);
+                    if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                const { x, y } = toXY(zone.center_lat, zone.center_lon);
+                ctx.fillStyle = "#ef4444";
+                ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+            });
+        }
+
+        function drawMines() {
+            if (!minePoints.length) return;
+            ctx.fillStyle = "#111827";
+            minePoints.forEach(m => {
+                const { x, y } = toXY(m.lat, m.lon);
+                ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2); ctx.fill();
+            });
+        }
+
+        function drawLegend() {
+            const legendX = 12;
+            const legendY = 12;
+            const items = [
+                { label: "Polygon", color: "#38bdf8" },
+                { label: "Route", color: "#22b573" },
+                { label: "Detections", color: "#f97316" },
+                { label: "Risk zones", color: "#ef4444" },
+            ];
+            const lineHeight = 14;
+            const boxWidth = 170;
+            const boxHeight = (items.length + 1) * lineHeight + 10;
+
+            ctx.save();
+            ctx.fillStyle = "rgba(255, 250, 242, 0.9)";
+            ctx.strokeStyle = "#e8ddcc";
+            ctx.lineWidth = 1;
+            ctx.fillRect(legendX, legendY, boxWidth, boxHeight);
+            ctx.strokeRect(legendX, legendY, boxWidth, boxHeight);
+
+            ctx.font = "12px sans-serif";
+            items.forEach((item, idx) => {
+                const y = legendY + 18 + idx * lineHeight;
+                ctx.fillStyle = item.color;
+                ctx.fillRect(legendX + 8, y - 8, 12, 4);
+                ctx.fillStyle = "#1f2933";
+                ctx.fillText(item.label, legendX + 28, y - 2);
+            });
+            ctx.fillStyle = "#6b7280";
+            ctx.fillText("Grid: 80 m", legendX + 8, legendY + boxHeight - 6);
             ctx.restore();
         }
-        function drawRoute() {
-            if (!waypoints.length) return;
-            ctx.strokeStyle = "#2563eb"; ctx.lineWidth = 2; ctx.beginPath();
-            waypoints.forEach((wp, i) => { const { x, y } = toXY(wp.lat, wp.lon); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
-            ctx.stroke();
-            waypoints.forEach(wp => { const { x, y } = toXY(wp.lat, wp.lon); ctx.fillStyle = "#2563eb"; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill(); });
-        }
-        function redrawStoredRoute() {
-            if (storedRoute.length < 2) return;
-            ctx.strokeStyle = "#9ca3af"; ctx.lineWidth = 1;
-            ctx.beginPath();
-            storedRoute.forEach((pt, i) => { const { x, y } = toXY(pt.lat, pt.lon); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
-            ctx.stroke();
-        }
-        function drawTrail() {
-            if (trail.length < 2) return;
-            for (let i = 1; i < trail.length; i++) {
-                const a = trail[i - 1], b = trail[i];
-                let color = "#9ca3af";
-                if (b.state === "clear") color = "#22c55e";
-                if (b.state === "warn") color = "#facc15";
-                if (b.state === "danger") color = "#ef4444";
-                ctx.strokeStyle = color; ctx.lineWidth = 3;
-                ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-            }
-        }
-        function drawMarkers() {
-            markers.forEach(m => {
-                const { x, y } = toXY(m.lat, m.lon);
-                let markerColor = "#ef4444";
-                if (m.state === "warn") markerColor = "#facc15";
-                if (m.state === "clear") markerColor = "#22c55e";
-                ctx.fillStyle = markerColor;
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-        function drawDrone() {
-            const { x, y } = toXY(drone.lat, drone.lon);
-            ctx.save(); ctx.translate(x, y); ctx.rotate(-drone.heading);
-            ctx.fillStyle = "#10b981"; ctx.beginPath(); ctx.moveTo(12, 0); ctx.lineTo(-10, 7); ctx.lineTo(-10, -7); ctx.closePath(); ctx.fill(); ctx.restore();
-        }
+
         function render() {
             drawGrid();
-            redrawStoredRoute();
-            drawTrail();
+            // draw only outline to keep drone visible
+            drawPolygon();
             drawRoute();
-            drawMarkers();
-            drawDrone();
+            drawWaypoints();
+            drawRiskZones();
+            drawMines();
+            drawPlayback();
+            drawLegend();
         }
+        render();
 
-        function update(dt) {
-            if (!running || waypoints.length === 0) return;
-            const target = waypoints[drone.targetIdx];
-            const { x: tx, y: ty } = toXY(target.lat, target.lon);
-            const { x: dx, y: dy } = toXY(drone.lat, drone.lon);
-            const vecX = tx - dx, vecY = ty - dy;
-            const dist = Math.hypot(vecX, vecY);
-            if (dist < 2) {
-                waypoints.splice(drone.targetIdx, 1);
-                if (waypoints.length === 0) { running = false; drone.targetIdx = 0; }
-                else if (drone.targetIdx >= waypoints.length) drone.targetIdx = 0;
-                return;
+        function closePolygon() {
+            if (polygonPoints.length > 2) {
+                origin = polygonPoints[0];
+                updateMeters();
+                render();
             }
-            const step = drone.speed * dt;
-            const nx = dx + (vecX / dist) * step;
-            const ny = dy + (vecY / dist) * step;
-            drone.heading = Math.atan2(-vecY, vecX);
-            const { lat, lon } = toLatLon(nx, ny);
-            drone.lat = lat; drone.lon = lon;
-
-            trail.push({ x: nx, y: ny, state: lastThreatState });
-            if (trail.length > 3000) trail.shift();
-
-            // логіка безпеки: якщо поруч патч з threatState, ставимо warn/danger
-            let nearbyThreat = null;
-            samplePatches.forEach(p => {
-                const dyM = (p.lat - drone.lat) * mPerLat;
-                const dxM = (p.lon - drone.lon) * mPerLon;
-                const d = Math.hypot(dxM, dyM);
-                if (d < 25 && p.threatState) {
-                    if (p.threatState === "danger") nearbyThreat = "danger";
-                    else if (p.threatState === "warn" && nearbyThreat !== "danger") nearbyThreat = "warn";
-                }
-                if (d < 25 && !p.processed && !pendingDetection) {
-                    runDetectionOnPatch(p, { mode: modeSelect.value, threshold: thrInput.value });
-                }
-            });
-            if (nearbyThreat) { lastThreatState = nearbyThreat; lastThreatTs = Date.now(); }
-            else if (Date.now() - lastThreatTs > 5000) { lastThreatState = "clear"; }
         }
-
-        let last = performance.now();
-        function loop(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; update(dt); render(); requestAnimationFrame(loop); }
-        requestAnimationFrame(loop);
-
-        async function runDetectionOnPatch(patch, opts = {}) {
-            if (pendingDetection) return;
-            pendingDetection = true;
-            detectionLog.textContent = `Сканування ${patch.label}...`;
-            lastPatchThumb.innerHTML = "";
-            try {
-                const blob = await fetchImageBlob(patch.url);
-                const formData = new FormData();
-                formData.append("file", blob, `${patch.label || "patch"}.jpg`);
-                formData.append("mode", opts.mode || "ensemble");
-                formData.append("threshold", opts.threshold || "0.4");
-                formData.append("draw_all", "false");
-                const res = await fetch("/api/detect", { method: "POST", body: formData });
-                if (!res.ok) { const t = await res.text(); throw new Error(t || `HTTP ${res.status}`); }
-                const data = await res.json();
-                const preds = data.predictions?.ensemble || data.predictions?.ssd || data.predictions?.yolo || [];
-                const maxScore = preds.length ? Math.max(...preds.map(b => b[4] || 0)) : 0;
-                const thr = parseFloat(opts.threshold || "0.4");
-                const dangerCutoff = Math.min(1, thr + 0.15); // clamp so high thresholds still work
-                let threatState = "clear";
-                if (preds.length) {
-                    threatState = maxScore >= dangerCutoff ? "danger" : "warn";
-                    addMarker(patch.lat, patch.lon, `${patch.label || "Патч"} (${preds.length})`, threatState);
-                    markRecentTrailDanger(220);
-                    detectionLog.innerHTML = `<span class="badge bg-${threatState === "danger" ? "danger" : "warning text-dark"}">Підозра</span> ${patch.label} | боксів: ${preds.length} | max score: ${maxScore.toFixed(2)} | danger≥${dangerCutoff.toFixed(2)}`;
-                } else {
-                    detectionLog.innerHTML = `<span class="badge bg-success">Чисто</span> ${patch.label}`;
-                }
-                lastThreatState = threatState; lastThreatTs = Date.now(); patch.threatState = threatState;
-                lastPatchThumb.innerHTML = `
-                    <div class="mt-2">
-                        <div class="small text-muted">Result with boxes</div>
-                        <img class="thumb" src="${data.image_url}" alt="${patch.label} result">
-                    </div>`;
-                patch.processed = true;
-            } catch (err) {
-                detectionLog.innerHTML = `<span class="badge bg-warning text-dark">Помилка</span> ${err.message}`;
-                lastThreatState = "warn"; lastThreatTs = Date.now();
-                patch.threatState = patch.threatState || "warn";
-            } finally { pendingDetection = false; }
-        }
-
-        document.getElementById("btnPlay").onclick = () => { running = true; };
-        document.getElementById("btnPause").onclick = () => { running = false; };
-        document.getElementById("btnManualRoute").onclick = () => {
-            manualMode = true;
-            resetRoute();
-            running = false;
-            lastThreatState = "clear";
-            detectionLog.textContent = "Маршрут очищено. Додайте нові точки кліком по карті.";
-        };
-        document.getElementById("btnAddHome").onclick = () => {
-            manualMode = false;
-            resetRoute();
-            addWaypoint(origin.lat, origin.lon);
-            drone.targetIdx = 0;
-            running = true;
-            lastThreatState = "clear";
-            detectionLog.textContent = "Йдемо додому.";
-        };
 
         canvas.addEventListener("click", (e) => {
             const rect = canvas.getBoundingClientRect();
             const { lat, lon } = toLatLon(e.clientX - rect.left, e.clientY - rect.top);
-            addWaypoint(lat, lon);
-            if (manualMode) { drone.targetIdx = 0; running = true; }
+            polygonPoints.push({ lat, lon });
+            render();
         });
-        canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+        canvas.addEventListener("dblclick", (e) => {
+            closePolygon();
+        });
 
-        function buildAutoRouteFromPatches() {
-            waypoints = []; storedRoute = []; trail = []; drone.targetIdx = 0;
+        document.getElementById("clearPolygonBtn").onclick = () => {
+            polygonPoints = [];
+            routePoints = [];
+            riskZones = [];
+            displayZones = [];
+            minePoints = [];
+            missionId = null;
+            lastRunId = null;
+            statusBox.textContent = "Полігон очищено. Додайте нові точки.";
+            exportBox.textContent = "";
+            detectionInfo.innerHTML = "";
+            reportBox.textContent = "Звіт з'явиться після process.";
+            simStatus.textContent = "";
+            setButtons();
+            render();
+        };
+
+        const statusBox = document.getElementById("statusBox");
+        const exportBox = document.getElementById("exportBox");
+        const zonesList = document.getElementById("zonesList");
+        const simStatus = document.getElementById("simStatus");
+        const reportBox = document.getElementById("reportBox");
+        const detectionInfo = document.getElementById("detectionInfo");
+        const modelSelect = document.getElementById("modelSelect");
+        const thresholdInput = document.getElementById("thresholdInput");
+        const thresholdValue = document.getElementById("thresholdValue");
+        const drawAllBox = document.getElementById("drawAllBox");
+        const minScoreInput = document.getElementById("minScoreInput");
+        const minScoreValue = document.getElementById("minScoreValue");
+        const sortZonesSelect = document.getElementById("sortZonesSelect");
+
+        thresholdInput.addEventListener("input", () => {
+            thresholdValue.textContent = Number(thresholdInput.value).toFixed(2);
+        });
+        minScoreInput.addEventListener("input", () => {
+            minScoreValue.textContent = Number(minScoreInput.value).toFixed(2);
+            applyZoneFilters();
+        });
+        sortZonesSelect.addEventListener("change", () => {
+            applyZoneFilters();
+        });
+        thresholdValue.textContent = Number(thresholdInput.value).toFixed(2);
+        minScoreValue.textContent = Number(minScoreInput.value).toFixed(2);
+
+        function setButtons() {
+            const hasMission = !!missionId;
+            document.getElementById("simulateBtn").disabled = !hasMission;
+            document.getElementById("processBtn").disabled = !hasMission;
+            document.getElementById("riskBtn").disabled = !hasMission;
+            document.getElementById("refineBtn").disabled = !hasMission;
         }
+        setButtons();
 
-        async function loadPatchesFromApi() {
-            try {
-                const res = await fetch("/api/patches?count=9999");
-                if (!res.ok) throw new Error("Не вдалося отримати патчі");
-                const data = await res.json();
-                if (data.origin) {
-                    origin = data.origin;
-                    ({ mPerLat, mPerLon } = metersPerDegree(origin.lat));
-                    drone.lat = origin.lat; drone.lon = origin.lon;
-                }
-                const rawPatches = (data.patches || []).map(p => ({ ...p, processed: false, threatState: null }));
-                samplePatches = placePatchesAway(rawPatches);
-                buildAutoRouteFromPatches();
-                running = false;
-            } catch (err) {
-                detectionLog.innerHTML = `<span class="badge bg-warning text-dark">Патчі</span> ${err.message}`;
-                samplePatches = [];
-                buildAutoRouteFromPatches();
-                running = false;
+        function sampleTrail(trail, limit = 120) {
+            if (!trail || trail.length <= limit) return trail || [];
+            const step = Math.max(1, Math.floor(trail.length / limit));
+            const sampled = [];
+            for (let i = 0; i < trail.length; i += step) {
+                sampled.push(trail[i]);
             }
+            if (sampled[sampled.length - 1] !== trail[trail.length - 1]) {
+                sampled.push(trail[trail.length - 1]);
+            }
+            return sampled;
         }
 
-        loadPatchesFromApi();
-
-        function updateStatus() {
-            statusBox.innerHTML = `
-широта: ${drone.lat.toFixed(6)}<br>
-довгота: ${drone.lon.toFixed(6)}<br>
-курс: ${(drone.heading * 180 / Math.PI).toFixed(1)}°<br>
-швидкість: ${drone.speed.toFixed(1)} м/с<br>
-точок маршруту: ${waypoints.length} | міток: ${markers.length} | стан: ${lastThreatState}
-            `;
-            requestAnimationFrame(updateStatus);
+        function startPlayback(trail, labelPrefix) {
+            playbackTrail = sampleTrail(trail || [], 120);
+            playbackIdx = 0;
+            if (playbackTimer) {
+                clearInterval(playbackTimer);
+                playbackTimer = null;
+            }
+            if (!playbackTrail.length) {
+                return;
+            }
+            simStatus.textContent = `${labelPrefix} ${playbackIdx}/${playbackTrail.length}`;
+            playbackTimer = setInterval(() => {
+                playbackIdx = Math.min(playbackIdx + 1, playbackTrail.length);
+                simStatus.textContent = `${labelPrefix} ${playbackIdx}/${playbackTrail.length}`;
+                render();
+                if (playbackIdx >= playbackTrail.length) {
+                    clearInterval(playbackTimer);
+                    playbackTimer = null;
+                }
+            }, 80);
         }
-        updateStatus();
+
+        function clampScore(score) {
+            if (!Number.isFinite(score)) return 0;
+            return Math.max(0, Math.min(1, score));
+        }
+
+        function riskLabel(score) {
+            if (score >= 0.8) return "DANGER";
+            if (score >= 0.5) return "WARN";
+            return "SAFE";
+        }
+
+        function riskClass(label) {
+            if (label === "DANGER") return "bg-danger";
+            if (label === "WARN") return "bg-warning";
+            return "bg-success";
+        }
+
+        function riskBadge(score) {
+            const safeScore = clampScore(score);
+            const label = riskLabel(safeScore);
+            return `<span class="badge ${riskClass(label)}">${label}</span> <span class="small text-muted">${safeScore.toFixed(2)}</span>`;
+        }
+
+        function riskProgress(score) {
+            const safeScore = clampScore(score);
+            const label = riskLabel(safeScore);
+            const pct = Math.round(safeScore * 100);
+            return `<div class="progress mt-1" style="height:6px;"><div class="progress-bar ${riskClass(label)}" style="width:${pct}%"></div></div>`;
+        }
+
+        function riskScoreFromPayload(payload) {
+            if (!payload) return 0;
+            if (payload.priority_zone && Number.isFinite(payload.priority_zone.score)) {
+                return clampScore(payload.priority_zone.score);
+            }
+            const level = String(payload.risk_level || "").toLowerCase();
+            if (level === "danger") return 0.85;
+            if (level === "warn") return 0.6;
+            if (level === "clear") return 0.2;
+            return 0;
+        }
+
+        function normalizeExportHref(path) {
+            if (!path) return "#";
+            if (path.startsWith("/")) return path;
+            return `/${path}`;
+        }
+
+        function renderExports(exports) {
+            if (!exports) {
+                exportBox.textContent = "";
+                return;
+            }
+            const entries = [
+                { label: "GeoJSON", path: exports.geojson },
+                { label: "CSV", path: exports.csv },
+                { label: "PDF", path: exports.pdf },
+            ];
+            const buttons = entries.map(e => `
+                <a class="btn btn-outline-dark btn-sm me-2 mb-2" href="${normalizeExportHref(e.path)}" download>Download ${e.label}</a>
+            `).join("");
+            const details = `
+                <details class="mt-2">
+                    <summary class="small">Technical details</summary>
+                    <div class="small text-muted mt-1">
+                        ${entries.map(e => `${e.label}: <code>${e.path}</code>`).join("<br>")}
+                    </div>
+                </details>`;
+            exportBox.innerHTML = `<div class="d-flex flex-wrap">${buttons}</div>${details}`;
+        }
+
+        function updateZonesList(zones) {
+            if (!zones.length) {
+                zonesList.textContent = "Немає зон ризику для відображення.";
+                return;
+            }
+            zonesList.innerHTML = zones.map(z => {
+                const score = clampScore(z.score);
+                return `
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="chip">#${z.id}</div>
+                            <div>${riskBadge(score)}</div>
+                        </div>
+                        ${riskProgress(score)}
+                        <div class="small text-muted">detections ${z.detections_count}</div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function applyZoneFilters() {
+            const minScore = parseFloat(minScoreInput.value || "0");
+            const sortMode = sortZonesSelect.value;
+            displayZones = (riskZones || []).filter(z => z.score >= minScore);
+            if (sortMode === "score_asc") {
+                displayZones.sort((a, b) => a.score - b.score);
+            } else if (sortMode === "detections_desc") {
+                displayZones.sort((a, b) => b.detections_count - a.detections_count);
+            } else {
+                displayZones.sort((a, b) => b.score - a.score);
+            }
+            updateZonesList(displayZones);
+            render();
+        }
+
+        function setRiskZones(zones) {
+            riskZones = zones || [];
+            showRoute = false;
+            playbackTrail = [];
+            playbackIdx = 0;
+            applyZoneFilters();
+        }
+
+        function renderReport(payload) {
+            if (!payload) {
+                reportBox.textContent = "Немає даних для звіту.";
+                return;
+            }
+            const riskLevel = payload.risk_level || "n/a";
+            const quality = payload.data_quality || {};
+            const recs = payload.recommendations || [];
+            const priority = payload.priority_zone;
+            const riskScore = riskScoreFromPayload(payload);
+            let html = `
+                <div class="d-flex align-items-center gap-2">
+                    <strong>Risk:</strong> ${riskBadge(riskScore)}
+                </div>
+                ${riskProgress(riskScore)}
+                <div class="small text-muted">level: ${riskLevel}</div>`;
+            if (priority) {
+                const pScore = clampScore(priority.score);
+                html += `<div class="mt-2">Priority zone: #${priority.id} ${riskBadge(pScore)}</div>`;
+            }
+            if (quality.status) {
+                html += `<div>Data quality: ${quality.status} (frames ${quality.frames}, telemetry ${quality.telemetry}, metal ${quality.metal_events})</div>`;
+            }
+            if (recs.length) {
+                html += "<div class=\"mt-1\"><strong>Recommendations:</strong></div><ul>";
+                recs.forEach(r => { html += `<li>${r}</li>`; });
+                html += "</ul>";
+            }
+            reportBox.innerHTML = html;
+        }
+
+        async function createMission() {
+            if (polygonPoints.length < 3) {
+                statusBox.textContent = "Додайте щонайменше 3 точки.";
+                return;
+            }
+            const altitude = parseFloat(document.getElementById("altInput").value);
+            const speed = parseFloat(document.getElementById("speedInput").value);
+            const trackSpacing = parseFloat(document.getElementById("trackSpacingInput").value);
+            const waypointStep = parseFloat(document.getElementById("waypointStepInput").value);
+            const captureEvery = parseFloat(document.getElementById("captureEveryInput").value);
+            const payload = {
+                polygon: polygonPoints.map(p => [p.lat, p.lon, altitude]),
+                altitude,
+                speed,
+                track_spacing_m: trackSpacing,
+                waypoint_step_m: waypointStep,
+                capture_every_m: captureEvery
+            };
+            const res = await fetch("/api/missions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                statusBox.textContent = "Помилка створення місії.";
+                return;
+            }
+            const data = await res.json();
+            missionId = data.id;
+            routePoints = data.route;
+            minePoints = [];
+            statusBox.innerHTML = `Місія створена: <span class="chip">${missionId}</span> Точок маршруту: ${routePoints.length}. Натисніть "Симулювати" для запуску.`;
+            setButtons();
+            render();
+        }
+
+        async function simulateMission() {
+            if (!missionId) return;
+            simStatus.innerHTML = `<span class="spinner-border spinner-border-sm text-warning"></span> Симуляція триває...`;
+            statusBox.textContent = "Симуляція запущена...";
+            const res = await fetch(`/api/missions/${missionId}/simulate`, { method: "POST" });
+            if (!res.ok) { statusBox.textContent = "Помилка симуляції"; simStatus.textContent = "❌ Помилка симуляції"; return; }
+            const data = await res.json();
+            lastRunId = data.run_id;
+            simStatus.textContent = `✅ Симуляція завершена: кадрів ${data.frames}, телеметрія ${data.telemetry}, метал ${data.metal_samples}`;
+            statusBox.innerHTML = `Симуляція завершена: кадрів ${data.frames}, телеметрія ${data.telemetry}, метал ${data.metal_samples}.`;
+            if (data.mines) {
+                minePoints = data.mines;
+            }
+            startPlayback(data.preview_path || [], "Симуляція програвання");
+            showRoute = true;
+            render();
+        }
+
+        async function processMission() {
+            if (!missionId) return;
+            statusBox.textContent = "Обробка детекцій...";
+            const model = modelSelect.value;
+            const threshold = parseFloat(thresholdInput.value);
+            const res = await fetch(`/api/missions/${missionId}/process?model=${encodeURIComponent(model)}&threshold=${threshold}`, { method: "POST" });
+            if (!res.ok) { statusBox.textContent = "Помилка обробки"; return; }
+            const data = await res.json();
+            statusBox.innerHTML = `Оброблено: детекцій ${data.detections}, зон ${data.zones}.`;
+            detectionInfo.innerHTML = `Детекцій: <strong>${data.detections}</strong>, Зон ризику: <strong>${data.zones}</strong>. Експорти доступні нижче.`;
+            if (data.exports) {
+                renderExports(data.exports);
+            }
+            if (data.sample_detection && data.sample_detection.image_url) {
+                const sampleRisk = clampScore(Number(data.sample_detection.risk_score || 0));
+                detectionInfo.innerHTML += `
+                    <div class="mt-2">
+                        <div class="small text-muted">Приклад кадру після обробки</div>
+                        <img src="${data.sample_detection.image_url}" class="img-fluid rounded border" alt="sample frame">
+                        <div class="small">score: ${Number(data.sample_detection.score).toFixed(2)} | risk: ${riskLabel(sampleRisk)} (${sampleRisk.toFixed(2)}) | metal: ${data.sample_detection.confirmed_by_metal ? "yes" : "no"}</div>
+                    </div>`;
+            }
+            renderReport(data);
+            loadRiskZones();
+        }
+
+        async function loadRiskZones() {
+            if (!missionId) return;
+            const res = await fetch(`/api/missions/${missionId}/risk-map`);
+            if (!res.ok) { zonesList.textContent = "Немає зон ризику."; return; }
+            const data = await res.json();
+            setRiskZones(data.zones || []);
+            if (lastRunId) {
+                exportArtifacts();
+            }
+            render();
+        }
+
+        async function exportArtifacts() {
+            if (!missionId) return;
+            const res = await fetch(`/api/missions/${missionId}/exports`);
+            if (!res.ok) { exportBox.textContent = "Не вдалося зібрати експорт."; return; }
+            const data = await res.json();
+            renderExports(data);
+        }
+
+        async function refineMission() {
+            if (!missionId) return;
+            const res = await fetch(`/api/missions/${missionId}/refine`, { method: "POST" });
+            if (!res.ok) { statusBox.textContent = "Не вдалося створити уточнення."; return; }
+            const data = await res.json();
+            missionId = data.id;
+            polygonPoints = data.polygon.map(p => ({ lat: p[0], lon: p[1] }));
+            routePoints = data.route;
+            riskZones = [];
+            displayZones = [];
+            if (data.mines) {
+                minePoints = data.mines;
+            }
+            statusBox.innerHTML = `Створено уточнену місію: <span class="chip">${missionId}</span>`;
+            setButtons();
+            render();
+        }
+
+        document.getElementById("createMissionBtn").onclick = createMission;
+        document.getElementById("simulateBtn").onclick = simulateMission;
+        document.getElementById("processBtn").onclick = processMission;
+        document.getElementById("riskBtn").onclick = loadRiskZones;
+        document.getElementById("refineBtn").onclick = refineMission;
     </script>
 </body>
 </html>

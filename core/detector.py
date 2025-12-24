@@ -1,6 +1,6 @@
 from core.ssd_inference import SSDModel
 from core.yolo_inference import YOLO_ONNX
-from core.ensemble_inference import ensemble_boxes_custom
+from core.ensemble_inference import EnsembleWBF
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 class Detector:
     """Єдиний інтерфейс над SSD, YOLO та ансамблем."""
 
-    def __init__(self, ssd_conf = 0.4, yolo_conf = 0.4):
+    def __init__(self, ssd_conf = 0.4, yolo_conf = 0.4, wbf_iou: float = 0.5, wbf_skip: float = 0.4, wbf_weights=None):
         print("Loading SSD...")
         ssd_path = BASE_DIR / "models" / "ssd300.pth"
         self.ssd = SSDModel(str(ssd_path), device="cpu", conf_threshold= ssd_conf)
@@ -17,24 +17,22 @@ class Detector:
         print("Loading YOLO...")
         yolo_path = BASE_DIR / "models" / "yolo.onnx"
         self.yolo = YOLO_ONNX(str(yolo_path), conf_threshold = yolo_conf)
+        self.ensemble = EnsembleWBF(iou_thr=wbf_iou, skip_box_thr=wbf_skip, weights=wbf_weights)
 
     def predict(self, img, mode="ensemble"):
         """Повертає бокси у форматі {model_name: [[x1, y1, x2, y2, score], ...]}."""
         orig_h, orig_w = img.shape[:2]
 
-        ssd_boxes = self.ssd.predict(img) if mode in ("ssd", "ensemble") else []
-
-        yolo_boxes = self.yolo.predict(img) if mode in ("yolo", "ensemble") else []
-
-        if mode == "ensemble":
-            fused = ensemble_boxes_custom(ssd_boxes, yolo_boxes, orig_w, orig_h)
-            return {"ssd": ssd_boxes, "yolo": yolo_boxes, "ensemble": fused}
-
-        if mode == "ssd":
-            return {"ssd": ssd_boxes}
-
-        if mode == "yolo":
-            return {"yolo": yolo_boxes}
+        ssd_boxes = self.ssd.predict(img) if mode in ("ssd", "ensemble", "all") else []
+        yolo_boxes = self.yolo.predict(img) if mode in ("yolo", "ensemble", "all") else []
+        preds = {}
+        if mode in ("ssd", "ensemble", "all"):
+            preds["ssd"] = ssd_boxes
+        if mode in ("yolo", "ensemble", "all"):
+            preds["yolo"] = yolo_boxes
+        if mode in ("ensemble", "all"):
+            preds["ensemble"] = self.ensemble.predict(ssd_boxes, yolo_boxes, orig_w, orig_h)
+        return preds
 
 
 if __name__ == "__main__":

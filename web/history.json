@@ -1,142 +1,142 @@
 [
     {
-        "timestamp": "2025-12-08 23:16:55",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/b603c510-dc90-45f3-86bd-ed067614bc82.jpg",
-        "result": "/static/results/529e95af-c97a-4f75-9f09-208d1a816f0c.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:55",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/2702aafd-91cd-439d-8218-f20459dd4577.jpg",
-        "result": "/static/results/bf49377e-d698-49d8-aae0-a4095d8cedca.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:45",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/1ebaa495-bb47-436f-beab-9ef7857652cf.jpg",
-        "result": "/static/results/e6877b41-c87f-4845-8ac6-6d9e9e9f0167.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:42",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/2350286b-1402-4eff-81af-de64ba12ee7c.jpg",
-        "result": "/static/results/ce115e30-f95e-4ce2-ad9c-7e14aa25cb02.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:34",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/53872c5c-bc77-4a9d-af36-4420d1e6b559.jpg",
-        "result": "/static/results/711ab99e-1411-4062-97a1-6e761a01a826.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:33",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/f794434d-117d-45c7-b576-88a4bdcc66b2.jpg",
-        "result": "/static/results/6852c341-6ccf-4da2-8ba6-427c2680f517.jpg"
-    },
-    {
-        "timestamp": "2025-12-08 23:16:06",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/709a0dae-5716-4036-bfd0-4dd26a8ffe0b.jpg",
-        "result": "/static/results/c74f97cc-d476-4be4-99bd-850504404f89.jpg"
+        "original": "/test_images/95_Zone_7_Mine_5cm_depth__2-9m_TemperatureInCenter__28-C_jpg.rf.44ba75a35efcc3204e7f77d36ba904bd.jpg",
+        "result": "/static/results/629ee087-8742-47aa-9fc8-3183aa97f0bf.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:16:04",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/98c496e8-55ea-402e-8d1c-204ea3475b89.jpg",
-        "result": "/static/results/68e7f89a-27c0-488c-8d77-112fb83510ed.jpg"
+        "original": "/test_images/571_Zone_3_Mine_1cm_depth__0-9m_TemperatureInCenter__29-C_jpg.rf.09ae3b364e749ac2285d20bc0b5c208c.jpg",
+        "result": "/static/results/f50f6e70-8a60-4376-9ffc-99f5003a0d5a.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:16:03",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/98bf93ab-cf5f-42c0-a218-fe00a86c5e8d.jpg",
-        "result": "/static/results/43100291-81ff-41ab-a7a4-ba74c292b1a1.jpg"
+        "original": "/test_images/342_Zone_5_Sruface_Mine_0cm_depth__5-0m_TemperatureInCenter__37-C_jpg.rf.565fe9454b99a969941544eca24c3b97.jpg",
+        "result": "/static/results/c9f3570e-87ae-42af-9a6c-555afc6a207d.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:16:01",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/b7367b9f-bf08-4b96-a0fc-ac1dc001ece0.jpg",
-        "result": "/static/results/5ccf08dd-45aa-4269-b4b5-e1032d329b57.jpg"
+        "original": "/test_images/1303_Zone_9_Mine_10_cm_depth__0-0m_TemperatureInCenter__34A-C_jpg.rf.743e7ffcb42ef120a08b10e66f33c928.jpg",
+        "result": "/static/results/2bd32663-460e-45a5-8a55-8053fcb9f44a.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:15:59",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/03d6a6d8-c4f6-4698-af19-f70c78346859.jpg",
-        "result": "/static/results/2766cad8-5f1f-4499-9334-caf884c9825b.jpg"
+        "original": "/test_images/156_Zone_2_Mine_1cm_depth__4-0m_TemperatureInCenter__30-C_jpg.rf.250426e9480aee8ad0c40451c18b4794.jpg",
+        "result": "/static/results/9628ae7b-5bf9-4a0e-b321-0c5e5465c94a.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:15:58",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/b301aa1b-bce4-4a98-9fa1-edcc5a5f82a1.jpg",
-        "result": "/static/results/20e4b9cb-2b44-44ed-9c27-78bf174dc650.jpg"
+        "original": "/test_images/156_Zone_2_Mine_1cm_depth__4-0m_TemperatureInCenter__30-C_jpg.rf.250426e9480aee8ad0c40451c18b4794.jpg",
+        "result": "/static/results/b2bd8652-8fcf-4f7a-af66-30f7c073e904.jpg"
     },
     {
-        "timestamp": "2025-12-08 23:15:55",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/8eb645d1-7d7c-47cf-9694-8f7b55eeafdb.jpg",
-        "result": "/static/results/4ecb3b78-597d-46ac-8713-40bb5b9bd3bf.jpg"
+        "original": "/test_images/62_Zone_5_Sruface_Mine_0cm_depth__2-2m_TemperatureInCenter__31-C_jpg.rf.21dcbb1ed4a7b5dc9977a85ee5719ab6.jpg",
+        "result": "/static/results/fe5a8843-171d-4166-86c8-8bc2d39597c8.jpg"
     },
     {
-        "timestamp": "2025-12-09 00:18:06",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/71b80c73-e6ee-4edc-8d2b-559ed15a4a10.jpg",
-        "result": "/static/results/12a6b07e-8250-44a2-b5ea-4af1b1bcd1de.jpg"
-    },
-    {
-        "timestamp": "2025-12-09 00:18:04",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/e901d9c3-7847-46f9-90cb-5b720d7fd741.jpg",
-        "result": "/static/results/ecd5fee8-f6f8-4c48-914b-146e6ee28a55.jpg"
-    },
-    {
-        "timestamp": "2025-12-09 00:18:03",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/8cb559c7-c6b5-470c-b058-9dcd732fd570.jpg",
-        "result": "/static/results/8ab0285b-1b59-4dd6-a411-7388af45f3a8.jpg"
-    },
-    {
-        "timestamp": "2025-12-09 00:18:02",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/fe4b34f6-6260-467d-8966-8339524f465b.jpg",
-        "result": "/static/results/3a3f9bc4-774c-4cfb-8a00-c019d66a2972.jpg"
-    },
-    {
-        "timestamp": "2025-12-09 00:17:59",
-        "model": "yolo",
-        "threshold": 0.4,
-        "original": "/static/uploaded/7491cd87-a2f9-4ca1-9a8a-203f6294160a.jpg",
-        "result": "/static/results/ceba02b2-6375-4476-ab61-ebe991252acc.jpg"
-    },
-    {
-        "timestamp": "2025-12-09 00:17:53",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/f1f974df-58a7-4529-9a3c-a7a72f49ce2e.jpg",
-        "result": "/static/results/c915acb5-1882-4649-95a7-06bec54f103e.jpg"
+        "original": "/test_images/267_Zone_1_Mine_1cm_depth__2-8m_TemperatureInCenter__35-C_jpg.rf.8b85e7808b2e7975e880561dda0632be.jpg",
+        "result": "/static/results/8349d865-9b88-4eea-a073-69548bc63bb6.jpg"
     },
     {
-        "timestamp": "2025-12-09 00:17:50",
+        "timestamp": "2025-12-25 00:17:07",
         "model": "ensemble",
         "threshold": 0.4,
-        "original": "/static/uploaded/3c03e7b0-549e-42aa-a01e-2b947262fe34.jpg",
-        "result": "/static/results/2aefb155-748e-4d15-aaa2-216317d2ca1d.jpg"
+        "original": "/test_images/267_Zone_1_Mine_1cm_depth__2-8m_TemperatureInCenter__35-C_jpg.rf.8b85e7808b2e7975e880561dda0632be.jpg",
+        "result": "/static/results/e849f719-b5bd-41d0-9059-4004c5387837.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/743_Zone_7_Mine_5cm_depth__2-0m_TemperatureInCenter__33A-C_jpg.rf.0eb0494efc63cbc45be8628b52bde5ad.jpg",
+        "result": "/static/results/03bf0cb9-e427-4c1d-9797-e9f2ed4a8067.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/925_Zone_2_Mine_1cm_depth__2-1m_TemperatureInCenter__33A-C_jpg.rf.51c477f4a4967fa39348af77f6dc1de1.jpg",
+        "result": "/static/results/c550387f-74d2-46f6-b63b-f650f7b8ea8a.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/788_min8_1m__0-5m_TemperatureInCenter__33A-C_jpg.rf.b98e88187fd22517426899b907184e6f.jpg",
+        "result": "/static/results/e8671fc6-5bad-4922-8cd1-26b0dbdce1e8.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1014_Zone_7_Mine_5cm_depth__2-0m_TemperatureInCenter__48A-C_jpg.rf.a46bf6879b6723359c1957cffb567f66.jpg",
+        "result": "/static/results/df7d7f84-1d9e-4f15-b2c6-2d97f1f45cce.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1161_Zone_8_Mine_5cm_depth__0-7m_TemperatureInCenter__33A-C_jpg.rf.e5f6c1bbc1dfe9a671c8fa3844205ae3.jpg",
+        "result": "/static/results/062063f3-bc1d-4f8d-826b-f506d46c40e5.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/768_Zone_9_Mine_10_cm_depth__1-8m_TemperatureInCenter__34A-C_jpg.rf.3f84c3399b851aa15354f47574e59874.jpg",
+        "result": "/static/results/a8ecc557-7a20-402d-be16-e2b16a0191f1.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1163_Zone_8_Mine_5cm_depth__0-8m_TemperatureInCenter__32A-C_jpg.rf.28c3e63a179f2993ddf5663bfc4f9183.jpg",
+        "result": "/static/results/5c87757b-f9c8-47f0-9cfa-73fe7a01c318.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1163_Zone_8_Mine_5cm_depth__0-8m_TemperatureInCenter__32A-C_jpg.rf.28c3e63a179f2993ddf5663bfc4f9183.jpg",
+        "result": "/static/results/dd90554a-7971-4db6-9f78-22716dfe021c.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1163_Zone_8_Mine_5cm_depth__0-8m_TemperatureInCenter__32A-C_jpg.rf.28c3e63a179f2993ddf5663bfc4f9183.jpg",
+        "result": "/static/results/80871965-ab5c-4b84-b62c-d27e13e49471.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/1163_Zone_8_Mine_5cm_depth__0-8m_TemperatureInCenter__32A-C_jpg.rf.28c3e63a179f2993ddf5663bfc4f9183.jpg",
+        "result": "/static/results/cf489ec1-6e13-4822-b326-baee691c56ef.jpg"
+    },
+    {
+        "timestamp": "2025-12-25 00:17:07",
+        "model": "ensemble",
+        "threshold": 0.4,
+        "original": "/test_images/481_Zone_5_Sruface_Mine_0cm_depth__2-7m_TemperatureInCenter__26-C_jpg.rf.cad5704c4c74950ccada2fc8ba854319.jpg",
+        "result": "/static/results/1eda52d3-03e4-49e8-832f-f81548623acf.jpg"
     }
 ]
